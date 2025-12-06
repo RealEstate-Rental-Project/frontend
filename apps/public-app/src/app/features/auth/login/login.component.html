@@ -1,0 +1,63 @@
+<div class="login-container">
+    <div class="background-overlay"></div>
+
+    <div class="glass-card">
+        <div class="header">
+            <h1>Welcome Home</h1>
+            <p>Premium Real Estate Experience</p>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="error-message">
+            {{ error }}
+        </div>
+
+        <!-- Step 1: Connect -->
+        <div *ngIf="step === 'connect'" class="step-content">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                    class="feather feather-home">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </div>
+
+            <button (click)="connectAndLogin()" [disabled]="loading" class="btn-primary">
+                <span *ngIf="!loading">Connect with MetaMask</span>
+                <span *ngIf="loading" class="spinner"></span>
+                <span *ngIf="loading">Processing...</span>
+            </button>
+
+            <p class="helper-text">Secure authentication via Web3 wallet</p>
+        </div>
+
+        <!-- Step 2: Register -->
+        <div *ngIf="step === 'register'" class="step-content">
+            <h2>Create Account</h2>
+            <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" formControlName="fullName" placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" formControlName="email" placeholder="john@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="wallet">Wallet Address</label>
+                    <input type="text" id="wallet" formControlName="walletAddress" class="wallet-input">
+                </div>
+
+                <button type="submit" [disabled]="registerForm.invalid || loading" class="btn-primary">
+                    <span *ngIf="!loading">Register</span>
+                    <span *ngIf="loading" class="spinner"></span>
+                </button>
+            </form>
+
+            <button (click)="step = 'connect'" class="btn-link">Back to Login</button>
+        </div>
+    </div>
+</div>

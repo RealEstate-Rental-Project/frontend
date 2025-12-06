@@ -1,0 +1,35 @@
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <a routerLink="/"><img src="/logo.png" alt="RealEstatePro" class="logo-img"></a>
+        </div>
+
+        <nav class="nav-links">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+            <a routerLink="/about" routerLinkActive="active">About</a>
+            <a routerLink="/contact" routerLinkActive="active">Contact</a>
+        </nav>
+
+        <div class="auth-actions">
+            <ng-container *ngIf="isLoggedIn; else guestTemplate">
+                <div class="user-profile">
+                    <button class="icon-btn notification-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </button>
+                    <div class="avatar" [title]="walletAddress">
+                        <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar">
+                    </div>
+                    <button (click)="logout()" class="btn-logout">Logout</button>
+                </div>
+            </ng-container>
+
+            <ng-template #guestTemplate>
+                <a routerLink="/auth/login" class="btn-login">Login / Register</a>
+            </ng-template>
+        </div>
+    </div>
+</header>

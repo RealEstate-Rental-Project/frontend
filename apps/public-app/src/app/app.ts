@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-// importing the component from the library
-import { Hero } from '@frontend/ui';
+import { HeaderComponent } from './shared/components/header/header.component';
 
 @Component({
-  selector: 'app-root',
   standalone: true,
-  imports: [RouterModule, Hero],
+  imports: [RouterModule, HeaderComponent],
+  selector: 'app-root',
   templateUrl: './app.html',
-  styleUrls: ['./app.scss'],
+  styleUrl: './app.scss',
 })
 export class App {
   protected title = 'public-app';

@@ -1,0 +1,70 @@
+<div class="home-page">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Find Your Dream Home</h1>
+            <p>Discover luxury properties for long and short term rental.</p>
+
+            <div class="search-wrapper">
+                <app-search></app-search>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties -->
+    <section class="featured-section container">
+        <div class="section-header">
+            <h2>Featured Properties</h2>
+            <a href="#" class="view-all">View All</a>
+        </div>
+
+        <div class="property-grid">
+            <div *ngFor="let property of featuredProperties" class="property-card">
+                <div class="card-image">
+                    <img [src]="'https://source.unsplash.com/800x600/?house,interior&sig=' + property.idProperty"
+                        alt="{{ property.title }}">
+                    <div class="badge" [class.available]="property.isAvailable">
+                        {{ property.isAvailable ? 'Available' : 'Rented' }}
+                    </div>
+                    <div class="price-tag">
+                        {{ property.rentPerMonth | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span>
+                    </div>
+                </div>
+
+                <div class="card-content">
+                    <div class="type">{{ property.typeOfRental === 'LONG_TERM' ? 'Long Term' : 'Short Term' }}</div>
+                    <h3>{{ property.title }}</h3>
+                    <p class="location">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{ property.city }}, {{ property.country }}
+                    </p>
+
+                    <div class="card-footer">
+                        <button class="btn-details">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card owner">
+                <h3>Become an Owner</h3>
+                <p>List your property and earn passive income with crypto payments.</p>
+                <button class="btn-cta">List Property</button>
+            </div>
+            <div class="cta-card tenant">
+                <h3>How it Works</h3>
+                <p>Learn about our secure blockchain-based rental process.</p>
+                <button class="btn-cta outline">Learn More</button>
+            </div>
+        </div>
+    </section>
+</div>

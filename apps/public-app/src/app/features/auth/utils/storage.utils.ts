@@ -1,0 +1,35 @@
+export class StorageUtils {
+    private static readonly ACCESS_TOKEN_KEY = 'access_token';
+    private static readonly REFRESH_TOKEN_KEY = 'refresh_token';
+    private static readonly WALLET_ADDRESS_KEY = 'wallet_address';
+
+    static getAccessToken(): string | null {
+        return localStorage.getItem(this.ACCESS_TOKEN_KEY);
+    }
+
+    static setAccessToken(token: string): void {
+        localStorage.setItem(this.ACCESS_TOKEN_KEY, token);
+    }
+
+    static getRefreshToken(): string | null {
+        return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+    }
+
+    static setRefreshToken(token: string): void {
+        localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+    }
+
+    static getWalletAddress(): string | null {
+        return localStorage.getItem(this.WALLET_ADDRESS_KEY);
+    }
+
+    static setWalletAddress(address: string): void {
+        localStorage.setItem(this.WALLET_ADDRESS_KEY, address);
+    }
+
+    static clear(): void {
+        localStorage.removeItem(this.ACCESS_TOKEN_KEY);
+        localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+        localStorage.removeItem(this.WALLET_ADDRESS_KEY);
+    }
+}
