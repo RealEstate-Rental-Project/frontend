@@ -45,6 +45,9 @@ export class SearchComponent implements OnInit, AfterViewInit {
             setTimeout(() => {
                 this.initMap();
             }, 100);
+        } else if (!this.showMap && this.map) {
+            this.map.remove();
+            this.map = null;
         }
     }
 

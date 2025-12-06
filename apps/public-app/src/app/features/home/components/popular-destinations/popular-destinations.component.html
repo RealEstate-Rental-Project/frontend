@@ -1,0 +1,20 @@
+<section class="popular-destinations">
+    <div class="container">
+        <div class="section-header">
+            <h2>Popular Destinations</h2>
+            <p>Explore properties in the most sought-after locations.</p>
+        </div>
+
+        <div class="destinations-grid">
+            <div *ngFor="let dest of destinations" class="destination-card">
+                <img [src]="dest.image" [alt]="dest.name">
+                <div class="overlay">
+                    <div class="content">
+                        <h3>{{ dest.name }}</h3>
+                        <span class="count">{{ dest.count }} Properties</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

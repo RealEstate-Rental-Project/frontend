@@ -1,0 +1,91 @@
+.popular-destinations {
+    padding: 5rem 0;
+    background-color: #f8f9fa;
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .section-header {
+        margin-bottom: 3rem;
+
+        h2 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #666;
+        }
+    }
+
+    .destinations-grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1.5rem;
+
+        @media (min-width: 640px) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @media (min-width: 1024px) {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    .destination-card {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        height: 300px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.4s ease;
+
+        &:hover {
+            transform: scale(1.02);
+
+            img {
+                transform: scale(1.1);
+            }
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0) 60%);
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+        }
+
+        .content {
+            color: white;
+
+            h3 {
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 0.2rem;
+            }
+
+            .count {
+                font-size: 0.9rem;
+                opacity: 0.9;
+                font-weight: 500;
+            }
+        }
+    }
+}

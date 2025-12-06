@@ -1,0 +1,45 @@
+.platform-stats {
+    background-color: #1a1a1a;
+    /* Dark background for contrast */
+    padding: 4rem 0;
+    color: white;
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .stats-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+
+        @media (min-width: 768px) {
+            flex-direction: row;
+            justify-content: space-around;
+        }
+    }
+
+    .stat-item {
+        text-align: center;
+
+        .value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #d4af37;
+            /* Gold */
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+    }
+}
