@@ -1,0 +1,49 @@
+<div class="register-container">
+    <h2>Create Account</h2>
+    <p class="subtitle">Complete your profile to continue</p>
+
+    <div *ngIf="error" class="error-message">
+        {{ error }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" formControlName="username" placeholder="johndoe123">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" formControlName="firstName" placeholder="John">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" formControlName="lastName" placeholder="Doe">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" formControlName="email" placeholder="john@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="description">Bio (Optional)</label>
+            <textarea id="description" formControlName="description" placeholder="Tell us about yourself..."
+                rows="3"></textarea>
+        </div>
+
+        <div class="wallet-info">
+            <label>Wallet Address</label>
+            <div class="address">{{ walletAddress }}</div>
+        </div>
+
+        <input type="hidden" formControlName="role">
+
+        <button type="submit" [disabled]="registerForm.invalid || loading" class="btn-primary">
+            <span *ngIf="!loading">Register</span>
+            <span *ngIf="loading" class="spinner"></span>
+        </button>
+    </form>
+</div>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { StorageUtils } from '../utils/storage.utils';
 import { Router } from '@angular/router';
+import { API_CONSTANTS } from '../../../core/constants/api.constants';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class AuthService {
 
     constructor(private router: Router) {
         this.api = axios.create({
-            baseURL: '/api', // Adjust base URL as needed
+            baseURL: API_CONSTANTS.GATEWAY_URL,
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -60,7 +61,10 @@ export class AuthService {
                             throw new Error('No refresh token');
                         }
 
-                        const response = await axios.post('/api/auth/refresh-token', { refreshToken });
+                        const response = await axios.post(
+                            API_CONSTANTS.GATEWAY_URL + API_CONSTANTS.ENDPOINTS.AUTH.REFRESH,
+                            { refreshToken }
+                        );
                         const { accessToken, refreshToken: newRefreshToken } = response.data;
 
                         StorageUtils.setAccessToken(accessToken);
@@ -92,16 +96,18 @@ export class AuthService {
 
     logout() {
         StorageUtils.clear();
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
     }
 
     async getNonce(walletAddress: string): Promise<string> {
-        const response = await this.api.get(`/auth/nonce/${walletAddress}`);
-        return response.data.nonce;
+        const response = await this.api.get(API_CONSTANTS.ENDPOINTS.AUTH.NONCE, {
+            params: { wallet: walletAddress }
+        });
+        return response.data;
     }
 
     async login(walletAddress: string, signature: string): Promise<any> {
-        const response = await this.api.post('/auth/login', { walletAddress, signature });
+        const response = await this.api.post(API_CONSTANTS.ENDPOINTS.AUTH.LOGIN, { walletAddress, signature });
         const { accessToken, refreshToken } = response.data;
         StorageUtils.setAccessToken(accessToken);
         StorageUtils.setRefreshToken(refreshToken);
@@ -110,7 +116,7 @@ export class AuthService {
     }
 
     async register(userData: any): Promise<any> {
-        const response = await this.api.post('/auth/register', userData);
+        const response = await this.api.post('/api/auth/metamask/register', userData);
         return response.data;
     }
 }

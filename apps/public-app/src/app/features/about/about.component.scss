@@ -1,0 +1,257 @@
+.about-page {
+    background-color: #fff;
+    padding-bottom: 4rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    height: 400px;
+    background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2670&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 5rem;
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        padding: 0 1rem;
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+    }
+}
+
+/* Mission Section */
+.mission-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-bottom: 6rem;
+
+    @media (min-width: 900px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .mission-content {
+        h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .key-points {
+            list-style: none;
+            padding: 0;
+
+            li {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+
+                .icon {
+                    color: #d4af37;
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                }
+
+                .text {
+                    display: flex;
+                    flex-direction: column;
+
+                    strong {
+                        color: #333;
+                        font-size: 1.1rem;
+                        margin-bottom: 0.2rem;
+                    }
+
+                    span {
+                        color: #666;
+                        font-size: 0.95rem;
+                    }
+                }
+            }
+        }
+    }
+
+    .mission-image {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+    }
+}
+
+/* Team Section */
+.team-section {
+    background-color: #f8f9fa;
+    padding: 5rem 0;
+    margin-bottom: 5rem;
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+
+        h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        justify-content: center;
+    }
+
+    .team-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+
+        &:hover {
+            transform: translateY(-5px);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .role {
+            display: block;
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    }
+}
+
+/* Tech Stack Section */
+.tech-section {
+    text-align: center;
+
+    .section-header {
+        margin-bottom: 3rem;
+
+        h2 {
+            font-size: 2rem;
+            color: #333;
+        }
+    }
+
+    .tech-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3rem;
+        align-items: center;
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0.7;
+            transition: opacity 0.3s, transform 0.3s;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+
+            img {
+                height: 50px;
+                width: auto;
+                max-width: 100px;
+            }
+
+            span {
+                font-weight: 600;
+                color: #555;
+                font-size: 0.9rem;
+            }
+        }
+    }
+}

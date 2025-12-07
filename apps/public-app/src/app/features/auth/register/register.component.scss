@@ -1,0 +1,150 @@
+.register-container {
+    color: white;
+
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #aaa;
+        margin-bottom: 2rem;
+    }
+
+    .error-message {
+        background: rgba(231, 76, 60, 0.2);
+        border: 1px solid #e74c3c;
+        color: #ff8d85;
+        padding: 0.8rem;
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1rem;
+        width: 100%;
+
+        @media (max-width: 480px) {
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 0;
+            /* Prevent flex item from overflowing */
+        }
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-size: 0.9rem;
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        input,
+        textarea {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 0.8rem;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s, background 0.3s;
+
+            &:focus {
+                outline: none;
+                border-color: #d4af37;
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            &::placeholder {
+                color: #666;
+            }
+        }
+
+        textarea {
+            resize: vertical;
+        }
+    }
+
+    .wallet-info {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        padding: 0.8rem;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: #d4af37;
+            margin-bottom: 0.3rem;
+        }
+
+        .address {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #eee;
+            word-break: break-all;
+        }
+    }
+
+    .btn-primary {
+        background: linear-gradient(90deg, #d4af37, #c5a028);
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.2s;
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover:not(:disabled) {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #666;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

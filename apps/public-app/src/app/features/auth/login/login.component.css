@@ -3,7 +3,8 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  font-family: 'Inter', sans-serif; /* Assuming Inter or similar is available */
+  font-family: 'Inter', sans-serif;
+  /* Assuming Inter or similar is available */
 }
 
 .login-container {
@@ -13,9 +14,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('https://images.unsplash.com/photo-1628744876497-eb30460be9f6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Example Luxury Interior */
+  background-image: url('https://images.unsplash.com/photo-1628744876497-eb30460be9f6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  /* Example Luxury Interior */
   background-size: cover;
   background-position: center;
+  padding-top: 100px;
+  /* Clear fixed header */
 }
 
 .background-overlay {
@@ -24,7 +28,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  background: rgba(0, 0, 0, 0.5);
+  /* Dark overlay */
   backdrop-filter: blur(5px);
   z-index: 1;
 }
@@ -47,8 +52,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header h1 {
@@ -72,7 +84,8 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%); /* Gold gradient */
+  background: linear-gradient(135deg, #d4af37 0%, #c5a028 100%);
+  /* Gold gradient */
   border: none;
   padding: 1rem 2rem;
   border-radius: 50px;
@@ -167,12 +180,52 @@
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: white;
   animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .glass-card {
+    padding: 2rem;
+    margin: 1rem;
+    max-width: 100%;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding-top: 80px;
+    /* Slightly less padding on mobile if header is smaller */
+    align-items: flex-start;
+    /* Align to top on mobile to allow scrolling if needed */
+    overflow-y: auto;
+    /* Allow scrolling */
+  }
+
+  .glass-card {
+    padding: 1.5rem;
+    margin: 1rem 0.5rem;
+    border-radius: 15px;
+  }
+
+  .header h1 {
+    font-size: 1.8rem;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+  }
 }

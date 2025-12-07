@@ -1,0 +1,83 @@
+<div class="about-page">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Reinventing Real Estate Rental with Trust & Transparency.</h1>
+            <p>A decentralized platform removing intermediaries through Ethereum Blockchain and AI.</p>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section container">
+        <div class="mission-content">
+            <h2>Our Mission</h2>
+            <p class="intro">
+                We are building the first Peer-to-Peer rental ecosystem that leverages Smart Contracts to guarantee
+                security deposit protection and automate rent payments, while using advanced AI algorithms to ensure
+                fair market pricing for everyone.
+            </p>
+            <ul class="key-points">
+                <li>
+                    <span class="icon">✓</span>
+                    <div class="text">
+                        <strong>Zero Intermediaries</strong>
+                        <span>Direct connection between owners and tenants.</span>
+                    </div>
+                </li>
+                <li>
+                    <span class="icon">✓</span>
+                    <div class="text">
+                        <strong>Tamper-proof Agreements</strong>
+                        <span>Immutable lease contracts on the blockchain.</span>
+                    </div>
+                </li>
+                <li>
+                    <span class="icon">✓</span>
+                    <div class="text">
+                        <strong>AI-Powered Fair Pricing</strong>
+                        <span>Real-time data analysis for optimal rent values.</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="mission-image">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop"
+                alt="Modern Office">
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Meet the Team</h2>
+                <p>The engineers building the future of real estate.</p>
+            </div>
+
+            <div class="team-grid">
+                <div *ngFor="let member of teamMembers" class="team-card">
+                    <div class="avatar">
+                        <img [src]="member.image" [alt]="member.name">
+                    </div>
+                    <h3>{{ member.name }}</h3>
+                    <span class="role">{{ member.role }}</span>
+                    <p class="desc">{{ member.desc }}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="tech-section container">
+        <div class="section-header">
+            <h2>Our Technology Stack</h2>
+        </div>
+        <div class="tech-grid">
+            <div *ngFor="let tech of techStack" class="tech-item" [title]="tech.name">
+                <img [src]="tech.icon" [alt]="tech.name">
+                <span>{{ tech.name }}</span>
+            </div>
+        </div>
+    </section>
+</div>
