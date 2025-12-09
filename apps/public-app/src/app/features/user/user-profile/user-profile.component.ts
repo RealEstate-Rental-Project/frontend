@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../core/services/user.service';
 import { StorageUtils } from '../../auth/utils/storage.utils';
 import { User } from '../../../core/models/user.model';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-user-profile',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterModule],
     templateUrl: './user-profile.component.html',
     styleUrls: ['./user-profile.component.scss']
 })

@@ -1,0 +1,67 @@
+<div class="my-properties-page">
+    <div class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>My Properties</h1>
+            <a routerLink="/properties/create" class="btn-primary">Add New Property</a>
+        </div>
+
+        <!-- Properties List -->
+        <div class="properties-list" *ngIf="!loading; else loadingTemplate">
+            <div class="property-card" *ngFor="let property of properties">
+
+                <!-- Image -->
+                <div class="card-image">
+                    <img [src]="property.rooms[0]?.roomImages[0]?.url || 'assets/placeholder.jpg'"
+                        [alt]="property.title">
+                </div>
+
+                <!-- Info -->
+                <div class="card-info">
+                    <div class="info-header">
+                        <h2>{{ property.title }}</h2>
+                        <span class="status-badge" [class.active]="property.isActive">
+                            <span class="dot"></span> {{ property.isActive ? 'Active' : 'Inactive' }}
+                        </span>
+                    </div>
+                    <p class="address">{{ property.address }}</p>
+                    <p class="price">{{ property.rentPerMonth }} ETH / month</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ property.stats.views }}</span>
+                        <span class="stat-label">Views</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ property.stats.bookings }}</span>
+                        <span class="stat-label">Bookings</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ property.stats.revenue }} ETH</span>
+                        <span class="stat-label">Revenue</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card-actions">
+                    <a [routerLink]="['/properties/edit', property.idProperty]" class="btn-edit">
+                        Edit
+                    </a>
+                    <button class="btn-stats" title="View Detailed Stats">
+                        📊
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <ng-template #loadingTemplate>
+            <div class="loading-state">
+                <div class="spinner"></div>
+            </div>
+        </ng-template>
+
+    </div>
+</div>

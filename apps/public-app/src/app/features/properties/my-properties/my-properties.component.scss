@@ -1,0 +1,245 @@
+.my-properties-page {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-top: 100px;
+    /* Clear fixed header */
+    padding-bottom: 4rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h1 {
+        font-size: 1.8rem;
+        color: #111;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .btn-primary {
+        background-color: #000;
+        color: #fff;
+        padding: 0.8rem 1.5rem;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #333;
+        }
+    }
+}
+
+/* Property Card */
+.property-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    /* Gray-200 */
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    transition: box-shadow 0.2s;
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+}
+
+.card-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 90px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f3f4f6;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media (max-width: 900px) {
+        width: 100%;
+        height: 200px;
+    }
+}
+
+.card-info {
+    flex: 1;
+    min-width: 0;
+    /* Prevent flex overflow */
+
+    .info-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .address {
+        color: #6b7280;
+        /* Gray-500 */
+        font-size: 0.9rem;
+        margin: 0 0 0.5rem;
+    }
+
+    .price {
+        color: #111;
+        font-weight: 500;
+        font-size: 0.95rem;
+        margin: 0;
+    }
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 12px;
+
+    .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #9ca3af;
+    }
+
+    &.active {
+        color: #065f46;
+        background: #d1fae5;
+
+        .dot {
+            background-color: #10b981;
+        }
+    }
+}
+
+/* Stats */
+.card-stats {
+    display: flex;
+    gap: 2rem;
+    padding: 0 2rem;
+    border-left: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+
+    @media (max-width: 900px) {
+        width: 100%;
+        padding: 1rem 0;
+        border: none;
+        border-top: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+        justify-content: space-around;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+    }
+}
+
+/* Actions */
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .btn-edit {
+        color: #111;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+
+        &:hover {
+            border-bottom-color: #111;
+        }
+    }
+
+    .btn-stats {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background-color: #f3f4f6;
+        }
+    }
+}
+
+/* Loading */
+.loading-state {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 0;
+
+    .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid #e5e7eb;
+        border-top-color: #111;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,13 +1,84 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Property } from '../models/property.model';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, forkJoin, throwError } from 'rxjs';
+import { switchMap, map, catchError } from 'rxjs/operators';
+import { Property, PropertyCreationRequest, Room } from '../models/property.model';
+import { API_CONSTANTS } from '../constants/api.constants';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PropertyService {
 
-    constructor() { }
+    constructor(private http: HttpClient) { }
+
+    createPropertyFlow(propertyData: PropertyCreationRequest): Observable<any> {
+        // 1. Create Property
+        return this.http.post<Property>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.BASE}`,
+            propertyData
+        ).pipe(
+            switchMap((createdProperty: Property) => {
+                const propertyId = createdProperty.idProperty;
+                console.log('Property Created:', propertyId);
+
+                // 2. Create Rooms (Sequential)
+                if (!propertyData.rooms || propertyData.rooms.length === 0) {
+                    return of(createdProperty);
+                }
+
+                // Create an observable for each room creation
+                const roomObservables = propertyData.rooms.map(room => {
+                    return this.http.post<Room>(
+                        `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.ROOMS.BY_PROPERTY(propertyId)}`,
+                        { name: room.name, orderIndex: room.orderIndex }
+                    ).pipe(
+                        switchMap((createdRoom: Room) => {
+                            const roomId = createdRoom.idRoom;
+                            console.log('Room Created:', roomId);
+
+                            // 3. Upload Images for this Room (Sequential)
+                            if (!room.files || room.files.length === 0) {
+                                return of(createdRoom);
+                            }
+
+                            const imageObservables = room.files.map((file, index) => {
+                                const formData = new FormData();
+                                formData.append('imageFile', file);
+                                formData.append('imageDto', JSON.stringify({ orderIndex: index + 1 }));
+
+                                return this.http.post(
+                                    `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.ROOM_IMAGES.BY_ROOM(roomId)}`,
+                                    formData
+                                );
+                            });
+
+                            // Execute image uploads sequentially or in parallel (forkJoin is fine for images of same room)
+                            return forkJoin(imageObservables).pipe(
+                                map(() => createdRoom)
+                            );
+                        })
+                    );
+                });
+
+                // Execute room creations sequentially to maintain order if needed, or parallel
+                // Using concat to ensure order if backend relies on it, or forkJoin for speed.
+                // Given the requirement "Sequential", let's use concat but wrapped in forkJoin if we want all results,
+                // or just forkJoin if the backend handles concurrency well.
+                // The prompt says "Iterative", implying sequential might be safer.
+                // However, forkJoin is easier for "wait for all".
+                // Let's use forkJoin for rooms as they are independent of each other (once property exists).
+                return forkJoin(roomObservables).pipe(
+                    map(() => createdProperty)
+                );
+            }),
+            catchError(err => {
+                console.error('Error in createPropertyFlow:', err);
+                // Optional: Implement rollback logic here (DELETE property)
+                throw err;
+            })
+        );
+    }
 
     getFeaturedProperties(): Observable<Property[]> {
         // Mock data for featured properties (simplified for list view)
@@ -173,5 +244,62 @@ export class PropertyService {
             ]
         };
         return of(property);
+    }
+    getMyProperties(ownerId: number): Observable<any[]> {
+        // Mock data for owner's properties with stats
+        const properties = [
+            {
+                idProperty: 101,
+                title: 'Sunny Apartment in Paris',
+                address: '12 Rue de Rivoli, Paris',
+                rentPerMonth: 1800,
+                isActive: true,
+                rooms: [
+                    {
+                        roomImages: [{ url: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1000&auto=format&fit=crop' }]
+                    }
+                ],
+                stats: {
+                    views: 120,
+                    bookings: 2,
+                    revenue: 4.5
+                }
+            },
+            {
+                idProperty: 102,
+                title: 'Cozy Studio in London',
+                address: '45 Oxford Street, London',
+                rentPerMonth: 1500,
+                isActive: true,
+                rooms: [
+                    {
+                        roomImages: [{ url: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1000&auto=format&fit=crop' }]
+                    }
+                ],
+                stats: {
+                    views: 85,
+                    bookings: 1,
+                    revenue: 1.2
+                }
+            },
+            {
+                idProperty: 103,
+                title: 'Beach House in Malibu',
+                address: '23000 Pacific Coast Hwy, Malibu',
+                rentPerMonth: 5000,
+                isActive: false,
+                rooms: [
+                    {
+                        roomImages: [{ url: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1000&auto=format&fit=crop' }]
+                    }
+                ],
+                stats: {
+                    views: 45,
+                    bookings: 0,
+                    revenue: 0
+                }
+            }
+        ];
+        return of(properties);
     }
 }
