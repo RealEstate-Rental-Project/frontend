@@ -100,14 +100,27 @@ export class AuthService {
     }
 
     async getNonce(walletAddress: string): Promise<string> {
-        const response = await this.api.get(API_CONSTANTS.ENDPOINTS.AUTH.NONCE, {
-            params: { wallet: walletAddress }
-        });
-        return response.data;
+        // Use axios directly to bypass interceptors
+        const response = await axios.get(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.AUTH.NONCE}`,
+            {
+                params: { wallet: walletAddress },
+                withCredentials: true
+            }
+        );
+        return response.data.nonce;
     }
 
     async login(walletAddress: string, signature: string): Promise<any> {
-        const response = await this.api.post(API_CONSTANTS.ENDPOINTS.AUTH.LOGIN, { walletAddress, signature });
+        // Use axios directly to bypass interceptors
+        const response = await axios.post(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.AUTH.LOGIN}`,
+            { wallet: walletAddress, signature },
+            {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
+            }
+        );
         const { accessToken, refreshToken } = response.data;
         StorageUtils.setAccessToken(accessToken);
         StorageUtils.setRefreshToken(refreshToken);
@@ -116,7 +129,15 @@ export class AuthService {
     }
 
     async register(userData: any): Promise<any> {
-        const response = await this.api.post('/api/auth/metamask/register', userData);
+        // Use axios directly to bypass interceptors
+        const response = await axios.post(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}`,
+            userData,
+            {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: false
+            }
+        );
         return response.data;
     }
 }
