@@ -294,3 +294,70 @@
         }
     }
 }
+
+// Gallery Modal Styles
+.gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+
+    .modal-header {
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: flex-end;
+
+        .btn-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.2s;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .modal-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 2rem;
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+
+            .gallery-item {
+                img {
+                    width: 100%;
+                    height: 300px;
+                    object-fit: cover;
+                    border-radius: 8px;
+                    transition: transform 0.3s;
+
+                    &:hover {
+                        transform: scale(1.02);
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

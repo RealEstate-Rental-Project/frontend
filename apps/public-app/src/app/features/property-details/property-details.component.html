@@ -8,7 +8,21 @@
             <div *ngFor="let img of galleryImages" class="sub-image">
                 <img [src]="img" alt="Property Image">
             </div>
-            <button class="btn-view-all">View All Photos</button>
+            <button class="btn-view-all" (click)="toggleGallery()">View All Photos</button>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <div class="gallery-modal" *ngIf="showGallery">
+        <div class="modal-header">
+            <button class="btn-close" (click)="toggleGallery()">×</button>
+        </div>
+        <div class="modal-content">
+            <div class="gallery-grid">
+                <div *ngFor="let img of allImages" class="gallery-item">
+                    <img [src]="img" alt="Property Image">
+                </div>
+            </div>
         </div>
     </div>
 
@@ -80,8 +94,12 @@
                     </div>
                 </div>
 
-                <button class="btn-rent">Rent Now (ETH)</button>
+                <button class="btn-rent" (click)="toggleReservation()">Rent Now (ETH)</button>
             </div>
         </div>
     </div>
+
+    <!-- Reservation Request Modal -->
+    <app-reservation-request *ngIf="showReservation" [property]="property" (close)="toggleReservation()">
+    </app-reservation-request>
 </div>

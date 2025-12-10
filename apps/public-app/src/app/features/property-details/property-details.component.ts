@@ -3,11 +3,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PropertyService } from '../../core/services/property.service';
 import { Property } from '../../core/models/property.model';
+import { ReservationRequestComponent } from '../rentals/reservation-request/reservation-request.component';
 
 @Component({
     selector: 'app-property-details',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, ReservationRequestComponent],
     templateUrl: './property-details.component.html',
     styleUrls: ['./property-details.component.scss']
 })
@@ -65,6 +66,9 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
         return 'https://images.unsplash.com/photo-1600596542815-60c37c6525fa?q=80&w=1000&auto=format&fit=crop';
     }
 
+    showGallery = false;
+    showReservation = false;
+
     get galleryImages(): string[] {
         // Collect up to 4 images for the grid
         const images: string[] = [];
@@ -76,5 +80,33 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
             });
         });
         return images;
+    }
+
+    get allImages(): string[] {
+        const images: string[] = [];
+        this.property?.rooms.forEach(room => {
+            room.roomImages.forEach(img => {
+                images.push(img.url);
+            });
+        });
+        return images;
+    }
+
+    toggleGallery(): void {
+        this.showGallery = !this.showGallery;
+        if (this.showGallery) {
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    toggleReservation(): void {
+        this.showReservation = !this.showReservation;
+        if (this.showReservation) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
     }
 }

@@ -1,0 +1,242 @@
+.reservation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1100; // Higher than gallery modal if needed, or manage z-indexes
+    display: flex;
+    justify-content: flex-end; // Side panel style
+    animation: fadeIn 0.3s ease;
+
+    .reservation-panel {
+        width: 100%;
+        max-width: 400px;
+        background: white;
+        height: 100%;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        animation: slideInRight 0.3s ease;
+        overflow-y: auto;
+
+        .panel-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            h2 {
+                margin: 0;
+                font-size: 1.5rem;
+                color: #333;
+            }
+
+            .btn-close {
+                background: none;
+                border: none;
+                font-size: 2rem;
+                cursor: pointer;
+                color: #999;
+                line-height: 1;
+
+                &:hover {
+                    color: #333;
+                }
+            }
+        }
+
+        .property-summary {
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            border-bottom: 1px solid #eee;
+            background: #f9f9f9;
+
+            .summary-image {
+                width: 80px;
+                height: 80px;
+                border-radius: 8px;
+                overflow: hidden;
+                flex-shrink: 0;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .summary-details {
+                h3 {
+                    margin: 0 0 0.5rem 0;
+                    font-size: 1rem;
+                    color: #333;
+                }
+
+                .badge {
+                    display: inline-block;
+                    padding: 0.2rem 0.5rem;
+                    background: #e0e0e0;
+                    border-radius: 4px;
+                    font-size: 0.75rem;
+                    color: #555;
+                    margin-bottom: 0.5rem;
+                }
+
+                .price {
+                    margin: 0;
+                    font-weight: 700;
+                    color: #333;
+
+                    span {
+                        font-weight: 400;
+                        color: #666;
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+        }
+
+        form {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex: 1;
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+
+                label {
+                    font-weight: 600;
+                    color: #444;
+                    font-size: 0.9rem;
+                }
+
+                input {
+                    padding: 0.8rem;
+                    border: 1px solid #ddd;
+                    border-radius: 6px;
+                    font-size: 1rem;
+
+                    &:focus {
+                        outline: none;
+                        border-color: #d4af37;
+                    }
+                }
+
+                .error-msg {
+                    color: #dc3545;
+                    font-size: 0.8rem;
+                }
+            }
+
+            .price-breakdown {
+                background: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                padding: 1rem;
+                margin-top: 1rem;
+
+                .breakdown-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 0.5rem;
+                    color: #555;
+                    font-size: 0.95rem;
+
+                    &.total {
+                        font-weight: 700;
+                        color: #333;
+                        font-size: 1.1rem;
+                        margin-bottom: 0;
+                    }
+                }
+
+                .breakdown-divider {
+                    height: 1px;
+                    background: #ddd;
+                    margin: 0.8rem 0;
+                }
+
+                .deposit-note {
+                    margin-top: 0.8rem;
+                    color: #888;
+                    font-size: 0.8rem;
+                    font-style: italic;
+                }
+            }
+
+            .messages {
+                .error-alert {
+                    color: #721c24;
+                    background-color: #f8d7da;
+                    border-color: #f5c6cb;
+                    padding: 0.75rem 1.25rem;
+                    border-radius: 4px;
+                    margin-bottom: 1rem;
+                }
+
+                .success-alert {
+                    color: #155724;
+                    background-color: #d4edda;
+                    border-color: #c3e6cb;
+                    padding: 0.75rem 1.25rem;
+                    border-radius: 4px;
+                    margin-bottom: 1rem;
+                }
+            }
+
+            .panel-footer {
+                margin-top: auto;
+
+                .btn-submit {
+                    width: 100%;
+                    background: linear-gradient(90deg, #d4af37, #c5a028);
+                    color: white;
+                    border: none;
+                    padding: 1rem;
+                    border-radius: 8px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: opacity 0.3s;
+
+                    &:disabled {
+                        background: #ccc;
+                        cursor: not-allowed;
+                    }
+
+                    &:hover:not(:disabled) {
+                        opacity: 0.9;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}

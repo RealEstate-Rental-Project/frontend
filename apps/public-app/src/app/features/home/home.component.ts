@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { SearchComponent } from '../search/search.component';
 import { FeaturesSectionComponent } from './components/features-section/features-section.component';
 import { PopularDestinationsComponent } from './components/popular-destinations/popular-destinations.component';
@@ -13,6 +14,7 @@ import { Property } from '../../core/models/property.model';
     standalone: true,
     imports: [
         CommonModule,
+        RouterModule,
         SearchComponent,
         FeaturesSectionComponent,
         PopularDestinationsComponent,
