@@ -8,6 +8,7 @@ export interface RoomCreationRequest {
     orderIndex: number;
     imageIndexes: number[]; // Pointe vers les index de la liste globale de fichiers
     files?: File[]; // For frontend use
+    existingImages?: RoomImage[]; // For edit mode
 }
 
 export interface PropertyCreationRequest {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin, throwError } from 'rxjs';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { switchMap, map, catchError, delay, tap } from 'rxjs/operators';
 import { Property, PropertyCreationRequest, Room } from '../models/property.model';
 import { API_CONSTANTS } from '../constants/api.constants';
 import { MOCK_PROPERTIES } from '../../shared/data/mock-properties';
@@ -78,6 +78,15 @@ export class PropertyService {
                 // Optional: Implement rollback logic here (DELETE property)
                 throw err;
             })
+        );
+    }
+
+    updateProperty(id: number, propertyData: PropertyCreationRequest): Observable<any> {
+        console.log('Updating Property:', id, propertyData);
+        // Simulate API call
+        return of({ success: true, message: 'Property updated successfully!', data: propertyData }).pipe(
+            delay(1000),
+            tap(() => console.log('Property update simulated success'))
         );
     }
 

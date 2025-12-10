@@ -11,6 +11,7 @@ export const appRoutes: Route[] = [
     { path: 'auth/login', component: LoginComponent },
     { path: 'properties/my-listings', component: MyPropertiesComponent },
     { path: 'properties/create', component: CreatePropertyComponent },
+    { path: 'properties/edit/:id', component: CreatePropertyComponent },
     { path: 'properties/:id', component: PropertyDetailsComponent },
     { path: 'about', component: AboutComponent },
     { path: 'profile', component: UserProfileComponent },
