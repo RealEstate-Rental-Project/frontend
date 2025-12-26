@@ -1,22 +1,13 @@
 <div class="home-page">
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1>Find Your Dream Home</h1>
-            <p>Discover luxury properties for long and short term rental.</p>
-
-            <div class="search-wrapper">
-                <app-search></app-search>
-            </div>
-        </div>
-    </section>
+    <!-- Hero Section -->
+    <app-hero></app-hero>
 
     <!-- Featured Properties -->
     <section class="featured-section container">
         <div class="section-header">
             <h2>Featured Properties</h2>
-            <a href="#" class="view-all">View All</a>
+            <a [routerLink]="['/properties']" class="view-all">View All</a>
         </div>
 
         <div class="property-grid">
@@ -28,12 +19,12 @@
                         {{ property.isAvailable ? 'Available' : 'Rented' }}
                     </div>
                     <div class="price-tag">
-                        {{ property.rentPerMonth | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span>
+                        {{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span>
                     </div>
                 </div>
 
                 <div class="card-content">
-                    <div class="type">{{ property.typeOfRental === 'LONG_TERM' ? 'Long Term' : 'Short Term' }}</div>
+                    <div class="type">{{ property.typeOfRental === 'MONTHLY' ? 'Long Term' : 'Short Term' }}</div>
                     <h3>{{ property.title }}</h3>
                     <p class="location">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"

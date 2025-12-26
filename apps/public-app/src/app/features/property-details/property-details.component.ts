@@ -27,22 +27,31 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
         if (id) {
             this.propertyService.getPropertyById(id).subscribe((data: Property) => {
                 this.property = data;
+                if (isPlatformBrowser(this.platformId)) {
+                    setTimeout(() => {
+                        this.initMap();
+                    }, 100);
+                }
             });
         }
     }
 
     ngAfterViewInit(): void {
-        if (isPlatformBrowser(this.platformId) && this.property?.latitude && this.property?.longitude) {
-            this.initMap();
-        }
+        // Map initialization moved to ngOnInit subscription
     }
 
     private async initMap() {
         if (!this.property?.latitude || !this.property?.longitude) return;
+        if (this.map) {
+            this.map.remove(); // Clean up existing map if any
+        }
 
         const L = await import('leaflet');
-        const lat = parseFloat(this.property.latitude);
-        const lng = parseFloat(this.property.longitude);
+        const lat = this.property.latitude;
+        const lng = this.property.longitude;
+
+        const mapContainer = document.getElementById('map');
+        if (!mapContainer) return;
 
         this.map = L.map('map').setView([lat, lng], 13);
 

@@ -1,6 +1,6 @@
 export enum TypeOfRental {
-    LONG_TERM = 'LONG_TERM',
-    SHORT_TERM = 'SHORT_TERM'
+    MONTHLY = 'MONTHLY',
+    DAILY = 'DAILY'
 }
 
 export interface RoomCreationRequest {
@@ -16,10 +16,13 @@ export interface PropertyCreationRequest {
     country: string;
     city: string;
     address: string;
+    longitude: number;
+    latitude: number;
     description: string;
     typeOfRental: TypeOfRental;
-    rentPerMonth: number;
+    rentAmount: number;
     securityDeposit: number;
+    onChainId?: number;
     rooms: RoomCreationRequest[];
 }
 
@@ -45,11 +48,11 @@ export interface Property {
     country: string;
     city: string;
     address: string;
-    longitude?: string;
-    latitude?: string;
+    longitude?: number;
+    latitude?: number;
     description: string;
-    typeOfRental: 'LONG_TERM' | 'SHORT_TERM';
-    rentPerMonth: number;
+    typeOfRental: 'MONTHLY' | 'DAILY';
+    rentAmount: number;
     securityDeposit: number;
     ownerEthAddress: string;
     ownerId: number;

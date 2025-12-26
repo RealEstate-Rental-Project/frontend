@@ -79,7 +79,7 @@ export class ReservationRequestComponent implements OnInit {
         this.durationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (this.durationDays > 0) {
-            const dailyRate = this.property.rentPerMonth / 30;
+            const dailyRate = this.property.rentAmount / 30;
             this.proratedRent = dailyRate * this.durationDays;
             this.totalPrice = this.proratedRent + this.property.securityDeposit;
         }

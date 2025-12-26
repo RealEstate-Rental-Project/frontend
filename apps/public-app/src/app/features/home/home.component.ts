@@ -8,6 +8,7 @@ import { PlatformStatsComponent } from './components/platform-stats/platform-sta
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { PropertyService } from '../../core/services/property.service';
 import { Property } from '../../core/models/property.model';
+import { HeroComponent } from '../../shared/components/hero/hero.component';
 
 @Component({
     selector: 'app-home',
@@ -15,11 +16,11 @@ import { Property } from '../../core/models/property.model';
     imports: [
         CommonModule,
         RouterModule,
-        SearchComponent,
         FeaturesSectionComponent,
         PopularDestinationsComponent,
         PlatformStatsComponent,
-        FooterComponent
+        FooterComponent,
+        HeroComponent
     ],
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss']

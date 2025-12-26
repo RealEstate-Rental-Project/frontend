@@ -74,7 +74,7 @@
             <div class="booking-card">
                 <div class="card-header">
                     <div class="price">
-                        <span class="amount">{{ property.rentPerMonth | currency:'USD':'symbol':'1.0-0' }}</span>
+                        <span class="amount">{{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }}</span>
                         <span class="period">/ month</span>
                     </div>
                     <div class="status" [class.available]="property.isAvailable">
@@ -89,7 +89,7 @@
                     </div>
                     <div class="cost-row total">
                         <span>Total to Pay</span>
-                        <span>{{ (property.rentPerMonth + property.securityDeposit) | currency:'USD':'symbol':'1.0-0'
+                        <span>{{ (property.rentAmount + property.securityDeposit) | currency:'USD':'symbol':'1.0-0'
                             }}</span>
                     </div>
                 </div>

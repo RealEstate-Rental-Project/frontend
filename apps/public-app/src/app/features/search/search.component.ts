@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID, Output, EventEmitter } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService, SearchCriteria } from '../../core/services/search.service';
@@ -11,11 +11,13 @@ import { SearchService, SearchCriteria } from '../../core/services/search.servic
     styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit, AfterViewInit {
+    @Output() search = new EventEmitter<SearchCriteria>();
+
     criteria: SearchCriteria = {
-        location: '',
-        type: 'LONG_TERM',
-        minPrice: 0,
-        maxPrice: 10000
+        city: '',
+        typeOfRental: 'MONTHLY',
+        minRentAmount: 0,
+        maxRentAmount: 10000
     };
 
     showMap = false;
@@ -33,6 +35,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
     }
 
     onSearch() {
+        this.search.emit(this.criteria);
         this.searchService.searchProperties(this.criteria).subscribe(results => {
             console.log('Results:', results);
             // Emit results or navigate to search results page

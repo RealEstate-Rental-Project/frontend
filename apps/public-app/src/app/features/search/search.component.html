@@ -2,16 +2,16 @@
     <div class="search-bar">
         <div class="input-group">
             <label>Location</label>
-            <input type="text" [(ngModel)]="criteria.location" placeholder="City or Neighborhood">
+            <input type="text" [(ngModel)]="criteria.city" placeholder="City or Neighborhood">
         </div>
 
         <div class="divider"></div>
 
         <div class="input-group">
             <label>Type</label>
-            <select [(ngModel)]="criteria.type">
-                <option value="LONG_TERM">Long Term</option>
-                <option value="SHORT_TERM">Short Term</option>
+            <select [(ngModel)]="criteria.typeOfRental">
+                <option value="MONTHLY">Long Term</option>
+                <option value="DAILY">Short Term</option>
             </select>
         </div>
 
@@ -20,9 +20,9 @@
         <div class="input-group">
             <label>Price Range</label>
             <div class="price-range">
-                <input type="number" [(ngModel)]="criteria.minPrice" placeholder="Min">
+                <input type="number" [(ngModel)]="criteria.minRentAmount" placeholder="Min">
                 <span>-</span>
-                <input type="number" [(ngModel)]="criteria.maxPrice" placeholder="Max">
+                <input type="number" [(ngModel)]="criteria.maxRentAmount" placeholder="Max">
             </div>
         </div>
 

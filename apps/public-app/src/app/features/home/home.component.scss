@@ -1,6 +1,7 @@
 .home-page {
     min-height: 100vh;
     background-color: #f8f9fa;
+    padding-top: 80px;
 }
 
 .container {
@@ -9,49 +10,7 @@
     padding: 0 1.5rem;
 }
 
-/* Hero Section */
-.hero {
-    position: relative;
-    height: 600px;
-    background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2653&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
 
-    .hero-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.6));
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        width: 100%;
-        max-width: 900px;
-        padding: 0 1rem;
-
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 3rem;
-            opacity: 0.9;
-        }
-    }
-}
 
 /* Featured Section */
 .featured-section {

@@ -37,7 +37,7 @@ export class LoginComponent {
             try {
                 nonce = await this.authService.getNonce(address);
             } catch (e: any) {
-                if (e.response?.status === 404) {
+                if (e.status === 404 || e.error?.error === 'USER_NOT_FOUND') {
                     // User not found, switch to register
                     this.showRegisterForm = true;
                     return;
@@ -57,6 +57,10 @@ export class LoginComponent {
             this.router.navigate(['/']);
         } catch (err: any) {
             console.error(err);
+            if (err.status === 404 || err.error?.error === 'USER_NOT_FOUND') {
+                this.showRegisterForm = true;
+                return;
+            }
             if (err.code === 4001) {
                 this.error = 'User rejected the request.';
             } else {

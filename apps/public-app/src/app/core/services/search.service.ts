@@ -3,10 +3,13 @@ import { Observable, of } from 'rxjs';
 import { Property } from '../models/property.model';
 
 export interface SearchCriteria {
-    location?: string;
-    type?: 'LONG_TERM' | 'SHORT_TERM';
-    minPrice?: number;
-    maxPrice?: number;
+    city?: string;
+    minRentAmount?: number;
+    maxRentAmount?: number;
+    typeOfRental?: 'MONTHLY' | 'DAILY';
+    latitude?: number;
+    longitude?: number;
+    radiusInKm?: number;
 }
 
 @Injectable({

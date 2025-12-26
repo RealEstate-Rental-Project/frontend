@@ -17,9 +17,7 @@ export class MyPropertiesComponent implements OnInit {
     constructor(private propertyService: PropertyService) { }
 
     ngOnInit(): void {
-        // Mock owner ID
-        const ownerId = 1;
-        this.propertyService.getMyProperties(ownerId).subscribe({
+        this.propertyService.getMyProperties().subscribe({
             next: (data: any[]) => {
                 this.properties = data;
                 this.loading = false;

@@ -11,34 +11,28 @@ import { CommonModule } from '@angular/common';
 export class AboutComponent {
     teamMembers = [
         {
-            role: 'Frontend Engineer',
-            name: 'A. Yahya',
-            desc: 'Angular & UX Specialist crafting seamless Web3 experiences.',
-            image: 'https://ui-avatars.com/api/?name=A+Yahya&background=0D8ABC&color=fff'
+            role: 'Cloud & Frontend Engineer',
+            name: 'Y. Kamouss',
+            desc: 'Spécialiste Cloud et Angular créant des architectures web performantes et scalables.',
+            image: 'https://ui-avatars.com/api/?name=Y+Kamouss&background=0D8ABC&color=fff'
         },
         {
             role: 'Backend Engineer',
-            name: 'John Doe',
+            name: 'A. Yahya',
             desc: 'Spring Boot architect ensuring robust microservices.',
-            image: 'https://ui-avatars.com/api/?name=John+Doe&background=2ecc71&color=fff'
+            image: 'https://ui-avatars.com/api/?name=A+Yahya&background=2ecc71&color=fff'
         },
         {
             role: 'Blockchain Engineer',
-            name: 'Jane Smith',
+            name: 'U. Junaid',
             desc: 'Solidity expert developing secure Smart Contracts.',
-            image: 'https://ui-avatars.com/api/?name=Jane+Smith&background=9b59b6&color=fff'
+            image: 'https://ui-avatars.com/api/?name=U+Junaid&background=9b59b6&color=fff'
         },
         {
             role: 'DevOps Engineer',
-            name: 'Alex Ray',
+            name: 'S. Mohammed',
             desc: 'CI/CD & Kubernetes orchestration master.',
-            image: 'https://ui-avatars.com/api/?name=Alex+Ray&background=e67e22&color=fff'
-        },
-        {
-            role: 'Cloud Engineer',
-            name: 'Sarah Connor',
-            desc: 'AWS Infrastructure & Security guardian.',
-            image: 'https://ui-avatars.com/api/?name=Sarah+Connor&background=e74c3c&color=fff'
+            image: 'https://ui-avatars.com/api/?name=S+Mohammed&background=e67e22&color=fff'
         }
     ];
 

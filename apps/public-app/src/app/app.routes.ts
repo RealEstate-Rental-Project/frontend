@@ -7,8 +7,11 @@ import { UserProfileComponent } from './features/user/user-profile/user-profile.
 import { MyPropertiesComponent } from './features/properties/my-properties/my-properties.component';
 import { CreatePropertyComponent } from './features/properties/create-property/create-property.component';
 
+import { PropertiesListComponent } from './features/properties/properties-list/properties-list.component';
+
 export const appRoutes: Route[] = [
     { path: 'auth/login', component: LoginComponent },
+    { path: 'properties', component: PropertiesListComponent },
     { path: 'properties/my-listings', component: MyPropertiesComponent },
     { path: 'properties/create', component: CreatePropertyComponent },
     { path: 'properties/edit/:id', component: CreatePropertyComponent },

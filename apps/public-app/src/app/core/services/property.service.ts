@@ -5,6 +5,7 @@ import { switchMap, map, catchError, delay, tap } from 'rxjs/operators';
 import { Property, PropertyCreationRequest, Room } from '../models/property.model';
 import { API_CONSTANTS } from '../constants/api.constants';
 import { MOCK_PROPERTIES } from '../../shared/data/mock-properties';
+import { SearchCriteria } from './search.service';
 
 @Injectable({
     providedIn: 'root'
@@ -46,7 +47,10 @@ export class PropertyService {
                             const imageObservables = room.files.map((file, index) => {
                                 const formData = new FormData();
                                 formData.append('imageFile', file);
-                                formData.append('imageDto', JSON.stringify({ orderIndex: index + 1 }));
+
+                                const imageDto = { orderIndex: index + 1 };
+                                const imageDtoBlob = new Blob([JSON.stringify(imageDto)], { type: 'application/json' });
+                                formData.append('imageDto', imageDtoBlob);
 
                                 return this.http.post(
                                     `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.ROOM_IMAGES.BY_ROOM(roomId)}`,
@@ -82,54 +86,103 @@ export class PropertyService {
     }
 
     updateProperty(id: number, propertyData: PropertyCreationRequest): Observable<any> {
-        console.log('Updating Property:', id, propertyData);
-        // Simulate API call
-        return of({ success: true, message: 'Property updated successfully!', data: propertyData }).pipe(
-            delay(1000),
-            tap(() => console.log('Property update simulated success'))
+        return this.http.put(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.BY_ID(id)}`,
+            propertyData
         );
     }
 
     getFeaturedProperties(): Observable<Property[]> {
-        return of(MOCK_PROPERTIES);
+        return this.http.get<Property[]>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.FEATURED}`
+        );
+    }
+
+    getAllProperties(): Observable<Property[]> {
+        return this.http.get<Property[]>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.BASE}`
+        ).pipe(
+            switchMap(properties => this.hydratePropertiesWithDetails(properties))
+        );
+    }
+
+    searchProperties(criteria: SearchCriteria): Observable<Property[]> {
+        return this.http.post(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.SEARCH}`,
+            criteria,
+            { responseType: 'text' }
+        ).pipe(
+            map(response => {
+                try {
+                    return response ? JSON.parse(response) : [];
+                } catch (e) {
+                    console.warn('Failed to parse search response', e);
+                    return [];
+                }
+            }),
+            switchMap((properties: Property[]) => this.hydratePropertiesWithDetails(properties))
+        );
     }
 
     getPropertyById(id: string): Observable<Property> {
-        const property = MOCK_PROPERTIES.find(p => p.idProperty.toString() === id);
-        if (property) {
-            return of(property);
-        }
-        // Fallback or error handling if not found
-        return throwError(() => new Error('Property not found'));
+        return this.http.get<Property>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.BY_ID(Number(id))}`
+        ).pipe(
+            switchMap(property => this.hydratePropertiesWithDetails([property]).pipe(
+                map(properties => properties[0])
+            ))
+        );
     }
 
-    getMyProperties(ownerId: number): Observable<any[]> {
-        // Filter mock properties by ownerId if needed, or just return a subset for demo
-        const myProperties = MOCK_PROPERTIES.filter(p => p.ownerId === ownerId);
-
-        // If no properties found for this owner in mock data, return some default ones or empty
-        // For demo purposes, let's return all of them if the filter is empty, or just the filtered list.
-        // Let's stick to the filtered list but maybe ensure we have some data for ownerId 1 (which seems to be the default mock owner)
-
-        if (myProperties.length > 0) {
-            return of(myProperties.map(p => ({
+    getMyProperties(ownerId?: number): Observable<any[]> {
+        return this.http.get<Property[]>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.MY_PROPERTIES}`
+        ).pipe(
+            switchMap(properties => this.hydratePropertiesWithDetails(properties)),
+            map(properties => properties.map(p => ({
                 ...p,
                 stats: {
                     views: Math.floor(Math.random() * 100),
                     bookings: Math.floor(Math.random() * 5),
                     revenue: Math.floor(Math.random() * 5000)
                 }
-            })));
+            })))
+        );
+    }
+
+    private hydratePropertiesWithDetails(properties: Property[]): Observable<Property[]> {
+        if (!properties || properties.length === 0) {
+            return of([]);
         }
 
-        // Fallback to return all properties with stats for demo if no match
-        return of(MOCK_PROPERTIES.map(p => ({
-            ...p,
-            stats: {
-                views: Math.floor(Math.random() * 100),
-                bookings: Math.floor(Math.random() * 5),
-                revenue: Math.floor(Math.random() * 5000)
-            }
-        })));
+        // For each property, fetch its rooms
+        const propertyObservables = properties.map(property => {
+            return this.http.get<Room[]>(
+                `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.ROOMS.BY_PROPERTY(property.idProperty)}`
+            ).pipe(
+                switchMap(rooms => {
+                    if (!rooms || rooms.length === 0) {
+                        return of({ ...property, rooms: [] });
+                    }
+
+                    // For each room, fetch its images
+                    const roomObservables = rooms.map(room => {
+                        return this.http.get<any[]>(
+                            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.ROOM_IMAGES.BY_ROOM(room.idRoom)}`
+                        ).pipe(
+                            map(images => ({ ...room, roomImages: images })),
+                            catchError(() => of({ ...room, roomImages: [] })) // Handle error if images fail
+                        );
+                    });
+
+                    return forkJoin(roomObservables).pipe(
+                        map(roomsWithImages => ({ ...property, rooms: roomsWithImages }))
+                    );
+                }),
+                catchError(() => of({ ...property, rooms: [] })) // Handle error if rooms fail
+            );
+        });
+
+        return forkJoin(propertyObservables);
     }
 }

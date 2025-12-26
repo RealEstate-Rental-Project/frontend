@@ -50,11 +50,13 @@ function handle401Error(request: HttpRequest<unknown>, next: HttpHandlerFn, rout
         const refreshToken = StorageUtils.getRefreshToken();
 
         if (refreshToken) {
-            // Use fetch to avoid circular dependency with HttpClient
-            return from(fetch('http://localhost:8080/api/auth/metamask/refresh', {
+            // Construction de l'URL avec le paramètre de requête
+            const urlWithParams = `http://localhost:8880/api/auth/metamask/refresh?refreshToken=${encodeURIComponent(refreshToken)}`;
+
+            return from(fetch(urlWithParams, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ refreshToken })
+                headers: { 'Content-Type': 'application/json' }
+                // Pas de corps (body) nécessaire si tout passe par l'URL
             }).then(res => {
                 if (!res.ok) throw new Error('Refresh failed');
                 return res.json();

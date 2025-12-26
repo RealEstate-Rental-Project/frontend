@@ -11,8 +11,8 @@
             </div>
             <div class="summary-details">
                 <h3>{{ property.title }}</h3>
-                <span class="badge">{{ property.typeOfRental === 'LONG_TERM' ? 'Long Term' : 'Short Term' }}</span>
-                <p class="price">{{ property.rentPerMonth | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span></p>
+                <span class="badge">{{ property.typeOfRental === 'MONTHLY' ? 'Long Term' : 'Short Term' }}</span>
+                <p class="price">{{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span></p>
             </div>
         </div>
 
@@ -39,7 +39,7 @@
 
             <div class="price-breakdown" *ngIf="durationDays > 0">
                 <div class="breakdown-row">
-                    <span>{{ property.rentPerMonth | currency:'USD':'symbol':'1.0-0' }} x {{ durationDays }}
+                    <span>{{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }} x {{ durationDays }}
                         nights</span>
                     <span>{{ proratedRent | currency:'USD':'symbol':'1.0-0' }}</span>
                 </div>

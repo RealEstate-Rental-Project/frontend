@@ -1,0 +1,11 @@
+<section class="hero" [style.background-image]="'url(' + backgroundImage + ')'">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>{{ title }}</h1>
+        <p>{{ subtitle }}</p>
+
+        <div class="search-wrapper">
+            <app-search (search)="onSearch($event)"></app-search>
+        </div>
+    </div>
+</section>

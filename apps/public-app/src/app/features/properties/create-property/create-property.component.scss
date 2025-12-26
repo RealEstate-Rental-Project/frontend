@@ -84,18 +84,22 @@ $radius: 8px;
 .wizard-step {
   background: $white;
   padding: 3rem;
-  border-radius: $radius;
-  box-shadow: $shadow-md;
   border: 1px solid $border-color;
   margin-bottom: 2rem;
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   h2 {
     margin-top: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     font-size: 1.5rem;
     font-weight: 600;
     color: $text-color;
+  }
+
+  .step-description {
+    color: $text-light;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
     border-bottom: 1px solid $border-color;
     padding-bottom: 1rem;
   }
@@ -163,6 +167,34 @@ $radius: 8px;
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Map Styles */
+.map-container {
+  margin-top: 2rem;
+
+  label {
+    display: block;
+    font-size: 0.925rem;
+    color: $text-color;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  #map {
+    height: 400px;
+    width: 100%;
+    border-radius: $radius;
+    border: 1px solid $border-color;
+    z-index: 1;
+  }
+
+  .map-hint {
+    font-size: 0.85rem;
+    color: $text-light;
+    margin-top: 0.5rem;
+    font-style: italic;
   }
 }
 

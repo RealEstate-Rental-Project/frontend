@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { PropertyCreationRequest, TypeOfRental, RoomCreationRequest, Property } from '../../../core/models/property.model';
 import { PropertyService } from '../../../core/services/property.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
     selector: 'app-create-property',
@@ -23,9 +24,11 @@ export class CreatePropertyComponent implements OnInit {
         country: '',
         city: '',
         address: '',
+        longitude: 0,
+        latitude: 0,
         description: '',
-        typeOfRental: TypeOfRental.LONG_TERM,
-        rentPerMonth: 0,
+        typeOfRental: TypeOfRental.MONTHLY,
+        rentAmount: 0,
         securityDeposit: 0,
         rooms: []
     };
@@ -35,10 +38,16 @@ export class CreatePropertyComponent implements OnInit {
     // Temporary room input
     newRoomName = '';
 
+    // Map related
+    private map: any;
+    private marker: any;
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private propertyService: PropertyService
+        private propertyService: PropertyService,
+        private toastService: ToastService,
+        @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
     ngOnInit(): void {
@@ -60,9 +69,11 @@ export class CreatePropertyComponent implements OnInit {
                     country: prop.country,
                     city: prop.city,
                     address: prop.address,
+                    longitude: prop.longitude || 0,
+                    latitude: prop.latitude || 0,
                     description: prop.description,
                     typeOfRental: prop.typeOfRental as TypeOfRental,
-                    rentPerMonth: prop.rentPerMonth,
+                    rentAmount: prop.rentAmount,
                     securityDeposit: prop.securityDeposit,
                     rooms: prop.rooms.map(room => ({
                         name: room.name,
@@ -75,7 +86,7 @@ export class CreatePropertyComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error loading property', err);
-                alert('Failed to load property details.');
+                this.toastService.show('Failed to load property details.', 'error');
                 this.router.navigate(['/properties/my-listings']);
             }
         });
@@ -84,6 +95,12 @@ export class CreatePropertyComponent implements OnInit {
     nextStep() {
         if (this.currentStep < this.totalSteps) {
             this.currentStep++;
+            if (this.currentStep === 2) {
+                // Initialize map after view update
+                setTimeout(() => {
+                    this.initMap();
+                }, 100);
+            }
         }
     }
 
@@ -91,6 +108,69 @@ export class CreatePropertyComponent implements OnInit {
         if (this.currentStep > 1) {
             this.currentStep--;
         }
+    }
+
+    private async initMap() {
+        if (!isPlatformBrowser(this.platformId)) return;
+
+        const L = await import('leaflet');
+
+        // Fix Leaflet marker icon issues
+        const iconRetinaUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png';
+        const iconUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png';
+        const shadowUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png';
+
+        delete (L.Icon.Default.prototype as any)._getIconUrl;
+
+        L.Icon.Default.mergeOptions({
+            iconRetinaUrl,
+            iconUrl,
+            shadowUrl
+        });
+
+        // Default to Marrakech if no coordinates
+        const lat = this.property.latitude || 31.6295;
+        const lng = this.property.longitude || -7.9811;
+
+        if (this.map) {
+            this.map.remove();
+        }
+
+        this.map = L.map('map').setView([lat, lng], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(this.map);
+
+        // Add marker if coordinates exist
+        if (this.property.latitude && this.property.longitude) {
+            this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
+            this.marker.on('dragend', () => {
+                const position = this.marker.getLatLng();
+                this.updateCoordinates(position.lat, position.lng);
+            });
+        }
+
+        // Map click handler
+        this.map.on('click', (e: any) => {
+            const { lat, lng } = e.latlng;
+            if (this.marker) {
+                this.marker.setLatLng([lat, lng]);
+            } else {
+                this.marker = L.marker([lat, lng], { draggable: true }).addTo(this.map);
+                this.marker.on('dragend', () => {
+                    const position = this.marker.getLatLng();
+                    this.updateCoordinates(position.lat, position.lng);
+                });
+            }
+            this.updateCoordinates(lat, lng);
+        });
+    }
+
+    private updateCoordinates(lat: number, lng: number) {
+        this.property.latitude = lat;
+        this.property.longitude = lng;
+        console.log('Updated coordinates:', lat, lng);
     }
 
     addRoom() {
@@ -152,24 +232,27 @@ export class CreatePropertyComponent implements OnInit {
             this.propertyService.updateProperty(this.propertyId, this.property).subscribe({
                 next: (res) => {
                     console.log('Property updated successfully', res);
-                    alert('Property updated successfully!');
+                    this.toastService.show('Property updated successfully!', 'success');
                     this.router.navigate(['/properties/my-listings']);
                 },
                 error: (err) => {
                     console.error('Error updating property', err);
-                    alert('Failed to update property. See console for details.');
+                    // Error is already handled by interceptor, but we can show specific message if needed
                 }
             });
         } else {
+            // Generate random onChainId for now
+            this.property.onChainId = Math.floor(Math.random() * 1000000);
+
             this.propertyService.createPropertyFlow(this.property).subscribe({
                 next: (res) => {
                     console.log('Property created successfully', res);
-                    alert('Property created successfully!');
+                    this.toastService.show('Property created successfully!', 'success');
                     this.router.navigate(['/properties/my-listings']);
                 },
                 error: (err) => {
                     console.error('Error creating property', err);
-                    alert('Failed to create property. See console for details.');
+                    // Error is already handled by interceptor
                 }
             });
         }

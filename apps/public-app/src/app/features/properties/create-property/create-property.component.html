@@ -44,6 +44,8 @@
     <!-- Step 2: Location -->
     <div class="wizard-step" *ngIf="currentStep === 2">
       <h2>Location</h2>
+      <p class="step-description">Enter the address and pin the exact location on the map.</p>
+
       <div class="form-group">
         <label>Country</label>
         <input type="text" [(ngModel)]="property.country" placeholder="e.g. Morocco" />
@@ -56,6 +58,12 @@
         <label>Address</label>
         <input type="text" [(ngModel)]="property.address" placeholder="Full address" />
       </div>
+
+      <div class="map-container">
+        <label>Pin Location on Map</label>
+        <div id="map"></div>
+        <p class="map-hint">Click on the map to set the property location.</p>
+      </div>
     </div>
 
     <!-- Step 3: Details & Rooms -->
@@ -64,7 +72,7 @@
       <div class="form-row">
         <div class="form-group">
           <label>Rent per Month (ETH)</label>
-          <input type="number" [(ngModel)]="property.rentPerMonth" />
+          <input type="number" [(ngModel)]="property.rentAmount" />
         </div>
         <div class="form-group">
           <label>Security Deposit (ETH)</label>
@@ -135,7 +143,7 @@
           <h3>Financials</h3>
           <div class="form-row">
             <p>
-              Rent: <strong>{{ property.rentPerMonth }} ETH</strong>
+              Rent: <strong>{{ property.rentAmount }} ETH</strong>
             </p>
             <p>
               Deposit: <strong>{{ property.securityDeposit }} ETH</strong>
