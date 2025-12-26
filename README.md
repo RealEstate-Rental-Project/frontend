@@ -99,3 +99,187 @@ And join the Nx community:
 - [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
 - [Our Youtube channel](https://www.youtube.com/@nxdevtools)
 - [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+
+---
+
+
+# Documentation API — Search et récupération complète des propriétés
+
+Ce document explique au(e) développeur(se) frontend comment :
+- effectuer une recherche de propriétés (par city, type, fourchette de prix, latitude/longitude + rayon),
+- récupérer "my-properties" (les propriétés de l'utilisateur authentifié),
+- récupérer pour chaque propriété ses rooms et les images de chaque room pour afficher la fiche complète.
+
+Tous les endpoints sont préfixés par :
+`/api/property-microservice`
+
+Authentification
+- La plupart des endpoints privés nécessitent un header Authorization: `Bearer <jwt>`.
+- Le backend extrait l'utilisateur authentifié via `@AuthenticationPrincipal`.
+
+Résumé des endpoints importants
+
+1) Recherche de propriétés
+- POST /api/property-microservice/properties/search
+  - Content-Type: application/json
+  - Body (PropertySearchDTO) :
+    {
+      "city": "string",                  // facultatif
+      "minRentAmount": 100,               // facultatif (nombre)
+      "maxRentAmount": 1000,              // facultatif (nombre)
+      "typeOfRental": "SHORT_TERM|LONG_TERM|...", // facultatif (enum)
+      "latitude": 48.8566,                // facultatif (double)
+      "longitude": 2.3522,                // facultatif (double)
+      "radiusInKm": 5.0                   // facultatif (double) — défaut 5.0
+    }
+  - Response: 200 OK
+    - Liste d'entités `Property` (le contrôleur renvoie `List<Property>` pour la recherche).
+    - Remarque : les autres endpoints (GET `/properties` ou GET `/properties/{id}`) renvoient des `PropertyResponseDTO`.
+
+Remarques sur la recherche géospatiale
+- Si vous fournissez `latitude` + `longitude`, le service utilisera `radiusInKm` pour filtrer les propriétés à l'intérieur de ce rayon (par défaut 5 km).
+- Si vous spécifiez seulement `city`, la recherche filtre par ville.
+- Combinez filtres (city + price range + type + geo) selon l'UX souhaitée.
+
+2) Liste publique et single property
+- GET /api/property-microservice/properties
+  - Renvoie `List<PropertyResponseDTO>` (champs principaux de la propriété).
+- GET /api/property-microservice/properties/{id}
+  - Renvoie `PropertyResponseDTO`
+
+Structure `PropertyResponseDTO`
+- idProperty (Long)
+- onChainId (Long)
+- title (String)
+- country (String)
+- city (String)
+- address (String)
+- longitude (Double)
+- latitude (Double)
+- description (String)
+- typeOfRental (enum)
+- rentAmount (Long)
+- securityDeposit (Long)
+- isAvailable (Boolean)
+- isActive (Boolean)
+- ownerId (Long)
+- ownerEthAddress (String)
+- createdAt (LocalDateTime)
+- updatedAt (LocalDateTime)
+
+Important : `PropertyResponseDTO` ne contient PAS les rooms ni les images — il faut effectuer des appels supplémentaires pour récupérer ces données.
+
+3) Récupérer les propriétés de l'utilisateur (my-properties)
+- GET /api/property-microservice/properties/my-properties
+  - Auth required (Bearer JWT)
+  - Response: 200 OK
+    - `List<PropertyResponseDTO>` correspondant aux propriétés dont `ownerId` == utilisateur courant
+
+4) Récupérer les rooms d'une propriété
+- GET /api/property-microservice/rooms/property/{propertyId}
+  - Response: 200 OK
+    - `List<RoomResponseDTO>`
+
+Structure `RoomResponseDTO`
+- idRoom (Long)
+- name (String)
+- orderIndex (Integer)
+- propertyId (Long)
+
+5) Récupérer les images d'une room
+- GET /api/property-microservice/properties/room-images/room/{roomId}
+  - Response: 200 OK
+    - `List<RoomImageResponseDTO>`
+
+Structure `RoomImageResponseDTO`
+- idImage (Long)
+- url (String)      // URL publique accessible pour afficher l'image
+- s3Key (String)    // clé interne de stockage (S3)
+- orderIndex (Integer)
+- roomId (Long)
+
+Flux recommandé pour récupérer une propriété "complète" (property + rooms + images)
+
+Étapes (séquentielles mais parallélisables):
+1. Appeler `GET /api/property-microservice/properties` ou `GET /api/property-microservice/properties/my-properties` selon le cas (liste de `PropertyResponseDTO`).
+2. Pour chaque propriété retournée :
+   a) Appeler `GET /api/property-microservice/rooms/property/{propertyId}` pour récupérer les rooms associées.
+   b) Pour chaque room retournée, appeler `GET /api/property-microservice/properties/room-images/room/{roomId}` pour récupérer les images (utiliser `url` pour l'affichage).
+
+Conseils de performance pour le frontend
+- Paralléliser les appels : utilisez Promise.all pour récupérer rooms pour plusieurs propriétés en parallèle, puis pour chaque room récupérer les images en parallèle.
+- Paginer / limiter : s'il y a beaucoup de propriétés/rooms, limitez le nombre initial (l'API actuelle ne semble pas exposer la pagination — prévoir côté frontend des limites et lazy-loading).
+- Caching : mettre en cache les rooms/images par propertyId/roomId pour éviter répétitions lors de navigation.
+
+Exemple JS (fetch + Promise.all) — récupérer "my-properties" complets
+
+async function fetchFullMyProperties(apiBaseUrl, token) {
+  const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+  // 1) Récupérer mes propriétés
+  const propsRes = await fetch(`${apiBaseUrl}/properties/my-properties`, { headers });
+  if (!propsRes.ok) throw new Error('Failed to fetch my-properties');
+  const properties = await propsRes.json(); // array of PropertyResponseDTO
+
+  // 2) Pour chaque propriété récupérer les rooms
+  const roomsPromises = properties.map(p => 
+    fetch(`${apiBaseUrl}/rooms/property/${p.idProperty}`, { headers }).then(r => {
+      if (!r.ok) return [];
+      return r.json();
+    })
+  );
+
+  const roomsPerProperty = await Promise.all(roomsPromises); // array of room arrays
+
+  // 3) Pour chaque room récupérer les images (mettre en parallèle au niveau des rooms)
+  const imagesPromisesNested = roomsPerProperty.map(rooms =>
+    Promise.all(rooms.map(room =>
+      fetch(`${apiBaseUrl}/properties/room-images/room/${room.idRoom}`, { headers })
+        .then(r => r.ok ? r.json() : [])
+    ))
+  );
+
+  const imagesPerProperty = await Promise.all(imagesPromisesNested); // array of arrays of arrays
+
+  // 4) Composer la structure complète
+  const fullProperties = properties.map((p, i) => ({
+    ...p,
+    rooms: roomsPerProperty[i].map((room, j) => ({
+      ...room,
+      images: imagesPerProperty[i][j] || []
+    }))
+  }));
+
+  return fullProperties;
+}
+
+Exemple cURL (recherche)
+
+curl -X POST "http://localhost:8080/api/property-microservice/properties/search" \
+  -H "Content-Type: application/json" \
+  -d '{"city":"Paris","minRentAmount":200,"maxRentAmount":1500,"radiusInKm":10}'
+
+Exemple de requête pour récupérer les images d'une room
+
+curl -X GET "http://localhost:8080/api/property-microservice/properties/room-images/room/12"
+
+Bonnes pratiques et points d'attention
+- Gestion d'erreurs : vérifier le code HTTP, afficher des messages utilisateur appropriés (404 = ressource manquante, 401/403 = problème d'authentification/autorisation).
+- Sécurité : ne jamais exposer le token côté client (utiliser stockage sécurisé et renouveler si nécessaire).
+- Données incomplètes : `PropertyResponseDTO` ne contient pas rooms/images — utilisez la procédure ci-dessus pour les compléter.
+- Tri & ordre : `orderIndex` sur rooms et images indique l'ordre souhaité d'affichage.
+- Images : préférez utiliser le champ `url` du DTO `RoomImageResponseDTO` pour l'affichage (CORS et liens pré-signés si utilisés côté S3).
+
+Cas particuliers & suggestions d'améliorations (à discuter avec l'équipe backend)
+- Endpoint unique "property full" : idéalement exposer un endpoint `GET /properties/{id}/full` qui renvoie la propriété + rooms + images en un seul appel (réduction des allers-retours). Si vous pouvez modifier le backend plus tard, c'est une optimisation valable.
+- Pagination & filtres côté search
+- Support de thumbnails / tailles d'image si volume important
+
+Annexes — résumés des DTOs utilisés
+
+PropertySearchDTO: { city, minRentAmount, maxRentAmount, typeOfRental, latitude, longitude, radiusInKm }
+PropertyResponseDTO: { idProperty, onChainId, title, country, city, address, longitude, latitude, description, typeOfRental, rentAmount, securityDeposit, isAvailable, isActive, ownerId, ownerEthAddress, createdAt, updatedAt }
+RoomResponseDTO: { idRoom, name, orderIndex, propertyId }
+RoomImageResponseDTO: { idImage, url, s3Key, orderIndex, roomId }
+
+---

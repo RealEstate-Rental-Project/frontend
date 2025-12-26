@@ -50,6 +50,10 @@
 
     <!-- Map Modal / Expandable Section -->
     <div *ngIf="showMap" class="map-wrapper">
+        <div class="map-controls" *ngIf="criteria.latitude">
+            <span>Selected: {{ criteria.latitude | number:'1.4-4' }}, {{ criteria.longitude | number:'1.4-4' }}</span>
+            <button (click)="clearLocation()" class="btn-clear-loc">Clear Location</button>
+        </div>
         <div id="map"></div>
     </div>
 </div>

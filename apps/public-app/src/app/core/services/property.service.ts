@@ -110,11 +110,11 @@ export class PropertyService {
         return this.http.post(
             `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.SEARCH}`,
             criteria,
-            { responseType: 'text' }
+            { responseType: 'json' }
         ).pipe(
             map(response => {
                 try {
-                    return response ? JSON.parse(response) : [];
+                    return response as Property[];
                 } catch (e) {
                     console.warn('Failed to parse search response', e);
                     return [];

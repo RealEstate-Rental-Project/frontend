@@ -63,13 +63,13 @@ function handle401Error(request: HttpRequest<unknown>, next: HttpHandlerFn, rout
             })).pipe(
                 switchMap((data: any) => {
                     isRefreshing = false;
-                    const { accessToken, refreshToken: newRefreshToken } = data;
-                    StorageUtils.setAccessToken(accessToken);
-                    if (newRefreshToken) StorageUtils.setRefreshToken(newRefreshToken);
-                    refreshTokenSubject.next(accessToken);
+                    const { access_token, refresh_token } = data;
+                    StorageUtils.setAccessToken(access_token);
+                    if (refresh_token) StorageUtils.setRefreshToken(refresh_token);
+                    refreshTokenSubject.next(access_token);
 
                     return next(request.clone({
-                        setHeaders: { Authorization: `Bearer ${accessToken}` }
+                        setHeaders: { Authorization: `Bearer ${access_token}` }
                     }));
                 }),
                 catchError((err) => {

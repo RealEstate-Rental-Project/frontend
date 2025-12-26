@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, Inject, PLATFORM_ID, Output, EventEmi
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SearchService, SearchCriteria } from '../../core/services/search.service';
+import { PropertyService } from '../../core/services/property.service';
 
 @Component({
     selector: 'app-search',
@@ -25,6 +26,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
     constructor(
         private searchService: SearchService,
+        private propertyService: PropertyService,
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
@@ -36,9 +38,22 @@ export class SearchComponent implements OnInit, AfterViewInit {
 
     onSearch() {
         this.search.emit(this.criteria);
-        this.searchService.searchProperties(this.criteria).subscribe(results => {
+        this.propertyService.searchProperties(this.criteria).subscribe(results => {
             console.log('Results:', results);
             // Emit results or navigate to search results page
+            // For now, we might want to share these results with PropertiesListComponent
+            // But typically, the parent component (Hero -> Home) handles the event
+            // and calls the service.
+            // Since PropertiesListComponent also calls searchProperties when criteria changes (via input or service),
+            // we need to ensure the flow is correct.
+
+            // Actually, looking at the architecture:
+            // HeroComponent emits 'search' event.
+            // PropertiesListComponent has onSearch(criteria).
+
+            // If this component is just for input, emitting the event might be enough if the parent handles it.
+            // But the user complained about the empty service call HERE.
+            // So I will leave the service call but switch it to PropertyService to ensure it works if used directly.
         });
     }
 
@@ -54,6 +69,8 @@ export class SearchComponent implements OnInit, AfterViewInit {
         }
     }
 
+    private marker: any;
+
     private async initMap() {
         if (this.map) return;
 
@@ -65,5 +82,28 @@ export class SearchComponent implements OnInit, AfterViewInit {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.map);
+
+        this.map.on('click', (e: any) => {
+            const { lat, lng } = e.latlng;
+            this.criteria.latitude = lat;
+            this.criteria.longitude = lng;
+            this.criteria.radiusInKm = 5; // Default radius
+
+            if (this.marker) {
+                this.marker.remove();
+            }
+
+            this.marker = L.marker([lat, lng]).addTo(this.map);
+        });
+    }
+
+    clearLocation() {
+        this.criteria.latitude = undefined;
+        this.criteria.longitude = undefined;
+        this.criteria.radiusInKm = undefined;
+        if (this.marker) {
+            this.marker.remove();
+            this.marker = null;
+        }
     }
 }
