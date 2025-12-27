@@ -15,8 +15,13 @@ export class HeroComponent {
     @Input() subtitle = 'Discover luxury properties for long and short term rental.';
     @Input() backgroundImage = 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2653&auto=format&fit=crop';
     @Output() search = new EventEmitter<SearchCriteria>();
+    @Output() viewMap = new EventEmitter<void>();
 
     onSearch(criteria: SearchCriteria) {
         this.search.emit(criteria);
+    }
+
+    onViewMap() {
+        this.viewMap.emit();
     }
 }

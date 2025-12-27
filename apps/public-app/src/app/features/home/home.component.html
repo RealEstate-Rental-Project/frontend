@@ -1,20 +1,26 @@
 <div class="home-page">
     <!-- Hero Section -->
     <!-- Hero Section -->
-    <app-hero></app-hero>
+    <!-- Hero Section -->
+    <app-hero (viewMap)="toggleView()"></app-hero>
+
+    <div id="home-map" [class.hidden]="!showMap"></div>
 
     <!-- Featured Properties -->
     <section class="featured-section container">
         <div class="section-header">
-            <h2>Featured Properties</h2>
+            <div>
+                <h2>Featured Properties</h2>
+                <p class="subtitle">Handpicked for you by our AI based on your preferences</p>
+            </div>
             <a [routerLink]="['/properties']" class="view-all">View All</a>
         </div>
 
         <div class="property-grid">
             <div *ngFor="let property of featuredProperties" class="property-card">
                 <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1541123356219-284ebe98ae3b?q=80&w=1000&auto=format&fit=crop"
-                        alt="{{ property.title }}">
+                    <img [src]="getPropertyImage(property)" alt="{{ property.title }}"
+                        onerror="this.src='assets/placeholder.webp'">
                     <div class="badge" [class.available]="property.isAvailable">
                         {{ property.isAvailable ? 'Available' : 'Rented' }}
                     </div>

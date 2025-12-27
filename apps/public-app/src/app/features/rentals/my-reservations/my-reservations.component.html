@@ -1,0 +1,66 @@
+<div class="reservations-page">
+    <div class="container">
+        <div class="header">
+            <h1>My Reservations</h1>
+            <p>Track the status of your rental requests</p>
+        </div>
+
+        <div *ngIf="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading your reservations...</p>
+        </div>
+
+        <div *ngIf="error" class="error-state">
+            <p>{{ error }}</p>
+            <button (click)="loadReservations()">Try Again</button>
+        </div>
+
+        <ng-container *ngIf="reservations$ | async as reservations">
+            <div *ngIf="!loading && !error && reservations.length === 0" class="empty-state">
+                <p>You haven't made any reservations yet.</p>
+                <a routerLink="/properties" class="btn-browse">Browse Properties</a>
+            </div>
+
+            <div *ngIf="!loading && !error && reservations.length > 0" class="reservations-list">
+                <div class="reservation-card" *ngFor="let reservation of reservations">
+                    <div class="card-header">
+                        <span class="date">Requested on {{ reservation.createdAt | date:'mediumDate' }}</span>
+                        <span class="status-badge" [ngClass]="getStatusClass(reservation.status)">
+                            {{ reservation.status }}
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="property-info">
+                            <div class="property-image">
+                                <img [src]="reservation.property?.rooms?.[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'"
+                                    alt="Property Image">
+                            </div>
+                            <div class="property-text">
+                                <h3>Property #{{ reservation.propertyId }}</h3>
+                                <h4 *ngIf="reservation.property?.title">{{ reservation.property.title }}</h4>
+                                <a [routerLink]="['/properties', reservation.propertyId]" class="view-property">View
+                                    Property</a>
+                            </div>
+                        </div>
+
+                        <div class="reservation-details">
+                            <div class="detail-item">
+                                <span class="label">Check-in</span>
+                                <span class="value">{{ reservation.startDate | date:'mediumDate' }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Check-out</span>
+                                <span class="value">{{ reservation.endDate | date:'mediumDate' }}</span>
+                            </div>
+                            <div class="detail-item" *ngIf="reservation.totalPrice">
+                                <span class="label">Total Price</span>
+                                <span class="value">{{ reservation.totalPrice }} ETH</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

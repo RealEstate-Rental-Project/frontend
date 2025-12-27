@@ -19,6 +19,11 @@
           {
             "glob": "**/*",
             "input": "apps/public-app/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/public-app/src/assets", 
+            "output": "assets"
           }
         ],
         "styles": ["apps/public-app/src/styles.scss"],

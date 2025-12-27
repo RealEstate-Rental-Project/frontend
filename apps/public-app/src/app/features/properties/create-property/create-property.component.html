@@ -39,6 +39,18 @@
           </option>
         </select>
       </div>
+      <div class="form-group">
+        <label>Property Type</label>
+        <select [(ngModel)]="property.typeOfProperty">
+          <option *ngFor="let type of propertyTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Square Meters (m²)</label>
+        <input type="number" [(ngModel)]="property.sqM" placeholder="e.g. 120" />
+      </div>
     </div>
 
     <!-- Step 2: Location -->
@@ -129,7 +141,9 @@
             <strong>{{ property.title }}</strong>
           </p>
           <p>{{ property.description }}</p>
-          <p>Type: {{ property.typeOfRental }}</p>
+          <p>Rental Type: {{ property.typeOfRental }}</p>
+          <p>Property Type: {{ property.typeOfProperty }}</p>
+          <p>Area: {{ property.sqM }} m²</p>
         </div>
 
         <div class="review-group">

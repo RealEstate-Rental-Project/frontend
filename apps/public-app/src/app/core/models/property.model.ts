@@ -3,6 +3,13 @@ export enum TypeOfRental {
     DAILY = 'DAILY'
 }
 
+export enum PropertyType {
+    APARTMENT="APARTMENT",
+    HOUSE="HOUSE",
+    VILLA="VILLA",
+    STUDIO="STUDIO"
+}
+
 export interface RoomCreationRequest {
     name: string;
     orderIndex: number;
@@ -19,6 +26,8 @@ export interface PropertyCreationRequest {
     longitude: number;
     latitude: number;
     description: string;
+    sqM: number;
+    typeOfProperty: PropertyType;
     typeOfRental: TypeOfRental;
     rentAmount: number;
     securityDeposit: number;
@@ -51,6 +60,8 @@ export interface Property {
     longitude?: number;
     latitude?: number;
     description: string;
+    sqM: number;
+    typeOfProperty: PropertyType;
     typeOfRental: 'MONTHLY' | 'DAILY';
     rentAmount: number;
     securityDeposit: number;

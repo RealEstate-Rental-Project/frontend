@@ -1,15 +1,26 @@
 export interface RentalRequestDTO {
     propertyId: number;
-    tenantWallet: string; // Récupéré via AuthService/StorageUtils
     startDate: string; // ISO Date
     endDate: string;   // ISO Date
-    totalPrice: number; // Calculé
 }
 
 export enum RentalStatus {
     PENDING = 'PENDING',
-    APPROVED = 'APPROVED',
+    ACCEPTED = 'ACCEPTED',
     REJECTED = 'REJECTED',
-    ACTIVE = 'ACTIVE',
-    COMPLETED = 'COMPLETED'
+    EXPIRED = 'EXPIRED',
+    CANCELLED = 'CANCELLED'
+}
+
+export interface RentalRequest {
+    idRequest: number;
+    createdAt: string;
+    status: RentalStatus;
+    tenantId: number;
+    propertyId: number;
+    startDate: string;
+    endDate: string;
+    totalPrice?: number;
+    // Optional: Property details if hydrated
+    property?: any;
 }

@@ -1,4 +1,4 @@
-import { Property } from '../../core/models/property.model';
+import { Property, PropertyType } from '../../core/models/property.model';
 
 export const MOCK_PROPERTIES: Property[] = [
     {
@@ -11,6 +11,8 @@ export const MOCK_PROPERTIES: Property[] = [
         longitude: -7.981084,
         latitude: 31.629472,
         description: 'Experience the ultimate luxury in this stunning villa located just minutes from the vibrant center of Marrakech. Nestled in a lush garden with a private pool, Villa Dar Al-Hambra offers a perfect blend of traditional Moroccan architecture and modern comfort. Features include a spacious living room with fireplace, a fully equipped gourmet kitchen, and a rooftop terrace with breathtaking views of the Atlas Mountains. Ideal for families or groups seeking privacy and exclusivity.',
+        sqM: 450,
+        typeOfProperty: PropertyType.VILLA,
         typeOfRental: 'DAILY',
         rentAmount: 4500,
         securityDeposit: 1000,
@@ -105,6 +107,8 @@ export const MOCK_PROPERTIES: Property[] = [
         longitude: -7.981084,
         latitude: 31.629472,
         description: 'A sleek and modern apartment located in the heart of the Maarif district. Perfect for business travelers or couples, this apartment features a contemporary design, high-end appliances, and easy access to the city\'s best shops and restaurants.',
+        sqM: 85,
+        typeOfProperty: PropertyType.APARTMENT,
         typeOfRental: 'MONTHLY',
         rentAmount: 1200,
         securityDeposit: 1200,
@@ -155,6 +159,8 @@ export const MOCK_PROPERTIES: Property[] = [
         longitude: -7.981084,
         latitude: 31.629472,
         description: 'Wake up to the sound of the waves in this beautiful seaside condo. With direct beach access and stunning ocean views, this is the perfect vacation getaway. The condo features a bright and airy open plan living area, a private balcony, and resort-style amenities.',
+        sqM: 120,
+        typeOfProperty: PropertyType.APARTMENT,
         typeOfRental: 'DAILY',
         rentAmount: 4000,
         securityDeposit: 1000,
@@ -192,6 +198,8 @@ export const MOCK_PROPERTIES: Property[] = [
         longitude: -7.981084,
         latitude: 31.629472,
         description: 'A sleek and modern apartment located in the heart of the Maarif district. Perfect for business travelers or couples, this apartment features a contemporary design, high-end appliances, and easy access to the city\'s best shops and restaurants.',
+        sqM: 90,
+        typeOfProperty: PropertyType.APARTMENT,
         typeOfRental: 'DAILY',
         rentAmount: 4000,
         securityDeposit: 1000,

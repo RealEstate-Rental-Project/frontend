@@ -95,6 +95,8 @@ export class PropertyService {
     getFeaturedProperties(): Observable<Property[]> {
         return this.http.get<Property[]>(
             `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.FEATURED}`
+        ).pipe(
+            switchMap(properties => this.hydratePropertiesWithDetails(properties))
         );
     }
 

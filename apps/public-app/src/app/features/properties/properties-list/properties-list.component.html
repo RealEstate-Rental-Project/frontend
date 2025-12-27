@@ -1,7 +1,7 @@
 <div class="properties-page">
     <!-- Hero Section -->
     <app-hero title="Explore Our Properties" subtitle="Find the perfect place for your next stay or long-term home."
-        (search)="onSearch($event)">
+        (search)="onSearch($event)" (viewMap)="toggleView()">
     </app-hero>
 
     <div class="container main-content">
@@ -12,12 +12,14 @@
                 <p>Loading properties...</p>
             </div>
 
-            <div *ngIf="!isLoading && filteredProperties.length === 0" class="empty-state">
+            <div id="properties-map" [class.hidden]="!showMap"></div>
+
+            <div *ngIf="!isLoading && !showMap && filteredProperties.length === 0" class="empty-state">
                 <p>No properties found matching your criteria.</p>
                 <button class="btn-reset" (click)="loadProperties()">Reset Filters</button>
             </div>
 
-            <div *ngIf="!isLoading && filteredProperties.length > 0" class="property-grid">
+            <div *ngIf="!isLoading && !showMap && filteredProperties.length > 0" class="property-grid">
                 <div *ngFor="let property of filteredProperties" class="property-card">
                     <div class="card-image">
                         <img [src]="property.rooms[0]?.roomImages?.[0]?.url || 'https://images.unsplash.com/photo-1541123356219-284ebe98ae3b?q=80&w=1000&auto=format&fit=crop'"

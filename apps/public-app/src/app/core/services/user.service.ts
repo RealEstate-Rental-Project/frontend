@@ -26,6 +26,7 @@ export class UserService {
             console.warn('Failed to fetch user from backend, returning mock data for development.', error);
             // Return mock data if backend fails (for development)
             return {
+                id: '1',
                 username: 'crypto_enthusiast',
                 firstName: 'Alex',
                 lastName: 'Mercer',

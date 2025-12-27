@@ -7,7 +7,7 @@
 
         <div class="property-summary" *ngIf="property">
             <div class="summary-image">
-                <img [src]="property.rooms[0]?.roomImages?.[0]?.url || 'assets/placeholder.jpg'" [alt]="property.title">
+                <img [src]="property.rooms[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'" [alt]="property.title">
             </div>
             <div class="summary-details">
                 <h3>{{ property.title }}</h3>

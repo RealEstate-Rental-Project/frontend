@@ -13,6 +13,7 @@ import { PropertyService } from '../../core/services/property.service';
 })
 export class SearchComponent implements OnInit, AfterViewInit {
     @Output() search = new EventEmitter<SearchCriteria>();
+    @Output() viewMap = new EventEmitter<void>();
 
     criteria: SearchCriteria = {
         city: '',
@@ -40,24 +41,13 @@ export class SearchComponent implements OnInit, AfterViewInit {
         this.search.emit(this.criteria);
         this.propertyService.searchProperties(this.criteria).subscribe(results => {
             console.log('Results:', results);
-            // Emit results or navigate to search results page
-            // For now, we might want to share these results with PropertiesListComponent
-            // But typically, the parent component (Hero -> Home) handles the event
-            // and calls the service.
-            // Since PropertiesListComponent also calls searchProperties when criteria changes (via input or service),
-            // we need to ensure the flow is correct.
-
-            // Actually, looking at the architecture:
-            // HeroComponent emits 'search' event.
-            // PropertiesListComponent has onSearch(criteria).
-
-            // If this component is just for input, emitting the event might be enough if the parent handles it.
-            // But the user complained about the empty service call HERE.
-            // So I will leave the service call but switch it to PropertyService to ensure it works if used directly.
         });
     }
 
     toggleMap() {
+        this.viewMap.emit();
+        // Internal map logic disabled to use main map
+        /*
         this.showMap = !this.showMap;
         if (this.showMap && isPlatformBrowser(this.platformId)) {
             setTimeout(() => {
@@ -67,6 +57,7 @@ export class SearchComponent implements OnInit, AfterViewInit {
             this.map.remove();
             this.map = null;
         }
+        */
     }
 
     private marker: any;

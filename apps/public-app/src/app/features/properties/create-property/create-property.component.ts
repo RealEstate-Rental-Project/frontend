@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { PropertyCreationRequest, TypeOfRental, RoomCreationRequest, Property } from '../../../core/models/property.model';
+import { PropertyCreationRequest, TypeOfRental, RoomCreationRequest, Property, PropertyType } from '../../../core/models/property.model';
 import { PropertyService } from '../../../core/services/property.service';
 import { ToastService } from '../../../core/services/toast.service';
 
@@ -27,6 +27,8 @@ export class CreatePropertyComponent implements OnInit {
         longitude: 0,
         latitude: 0,
         description: '',
+        sqM: 0,
+        typeOfProperty: PropertyType.APARTMENT,
         typeOfRental: TypeOfRental.MONTHLY,
         rentAmount: 0,
         securityDeposit: 0,
@@ -34,6 +36,7 @@ export class CreatePropertyComponent implements OnInit {
     };
 
     rentalTypes = Object.values(TypeOfRental);
+    propertyTypes = Object.values(PropertyType);
 
     // Temporary room input
     newRoomName = '';
@@ -72,6 +75,8 @@ export class CreatePropertyComponent implements OnInit {
                     longitude: prop.longitude || 0,
                     latitude: prop.latitude || 0,
                     description: prop.description,
+                    sqM: prop.sqM,
+                    typeOfProperty: prop.typeOfProperty,
                     typeOfRental: prop.typeOfRental as TypeOfRental,
                     rentAmount: prop.rentAmount,
                     securityDeposit: prop.securityDeposit,

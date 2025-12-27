@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractContro
 import { Property } from '../../../core/models/property.model';
 import { RentalService } from '../../../core/services/rental.service';
 import { RentalRequestDTO } from '../../../core/models/rental.model';
-import { StorageUtils } from '../../auth/utils/storage.utils';
+
 
 @Component({
     selector: 'app-reservation-request',
@@ -88,24 +88,13 @@ export class ReservationRequestComponent implements OnInit {
     onSubmit(): void {
         if (this.reservationForm.invalid) return;
 
-        // Mock getting wallet from storage or auth service
-        // In a real app, we'd inject AuthService
-        const tenantWallet = StorageUtils.getWalletAddress() || '0xMockWalletAddress';
-
-        if (!tenantWallet) {
-            this.errorMessage = 'Please connect your wallet to make a reservation.';
-            return;
-        }
-
         this.isLoading = true;
         this.errorMessage = '';
 
         const dto: RentalRequestDTO = {
             propertyId: this.property.idProperty,
-            tenantWallet: tenantWallet,
             startDate: new Date(this.reservationForm.get('startDate')?.value).toISOString(),
-            endDate: new Date(this.reservationForm.get('endDate')?.value).toISOString(),
-            totalPrice: this.totalPrice
+            endDate: new Date(this.reservationForm.get('endDate')?.value).toISOString()
         };
 
         this.rentalService.createRentalRequest(dto).subscribe({

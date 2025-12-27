@@ -23,6 +23,10 @@ export const API_CONSTANTS = {
         ROOM_IMAGES: {
             BY_ID: (id: number) => `/api/property-microservice/properties/room-images/${id}`,
             BY_ROOM: (roomId: number) => `/api/property-microservice/properties/room-images/room/${roomId}`
+        },
+        RENTAL_AGREEMENT: {
+            BASE: '/api/rentalAgreement-microservice/rental-requests',
+            BY_TENANT: (tenantId: number) => `/api/rentalAgreement-microservice/rental-requests/tenant/${tenantId}`
         }
     }
 };
