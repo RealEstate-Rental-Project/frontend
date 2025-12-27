@@ -19,11 +19,11 @@ export class StorageUtils {
         localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
     }
 
-    static getWalletAddress(): string | null {
+    static getwallet(): string | null {
         return localStorage.getItem(this.WALLET_ADDRESS_KEY);
     }
 
-    static setWalletAddress(address: string): void {
+    static setwallet(address: string): void {
         localStorage.setItem(this.WALLET_ADDRESS_KEY, address);
     }
 

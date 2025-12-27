@@ -5,6 +5,13 @@ export interface User {
     lastName: string;
     email: string;
     description?: string;
-    walletAddress: string;
+    wallet: string;
     role?: string;
+    targetRent?: number;
+    minTotalRooms?: number;
+    targetSqft?: number;
+    searchLatitude?: number;
+    searchLongitude?: number;
+    preferredPropertyType?: string;
+    preferredRentalType?: string;
 }

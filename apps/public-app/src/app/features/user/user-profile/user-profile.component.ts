@@ -23,7 +23,7 @@ export class UserProfileComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        const wallet = StorageUtils.getWalletAddress();
+        const wallet = StorageUtils.getwallet();
         if (wallet) {
             this.user = await this.userService.getUserByWallet(wallet);
         } else {
@@ -36,5 +36,58 @@ export class UserProfileComponent implements OnInit {
     get avatarUrl(): string {
         // Generate a consistent avatar based on wallet address or use placeholder
         return `https://ui-avatars.com/api/?name=${this.user?.firstName}+${this.user?.lastName}&background=0D8ABC&color=fff&size=128`;
+    }
+
+    propertyTypes = ['APARTMENT', 'HOUSE', 'VILLA', 'STUDIO'];
+    rentalTypes = ['MONTHLY', 'DAILY'];
+    isSaving = false;
+    saveMessage = '';
+
+    isEditingProfile = false;
+    isSavingProfile = false;
+    profileSaveMessage = '';
+
+    toggleEditProfile() {
+        this.isEditingProfile = !this.isEditingProfile;
+        this.profileSaveMessage = '';
+    }
+
+    async saveProfile() {
+        if (!this.user) return;
+
+        this.isSavingProfile = true;
+        this.profileSaveMessage = '';
+
+        try {
+            const updatedUser = await this.userService.updateUser(this.user);
+            this.user = updatedUser;
+            this.profileSaveMessage = 'Profile updated successfully!';
+            this.isEditingProfile = false;
+            setTimeout(() => this.profileSaveMessage = '', 3000);
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            this.profileSaveMessage = 'Failed to update profile.';
+        } finally {
+            this.isSavingProfile = false;
+        }
+    }
+
+    async savePreferences() {
+        if (!this.user) return;
+
+        this.isSaving = true;
+        this.saveMessage = '';
+
+        try {
+            const updatedUser = await this.userService.updateUser(this.user);
+            this.user = updatedUser;
+            this.saveMessage = 'Preferences saved successfully!';
+            setTimeout(() => this.saveMessage = '', 3000);
+        } catch (error) {
+            console.error('Error saving preferences:', error);
+            this.saveMessage = 'Failed to save preferences.';
+        } finally {
+            this.isSaving = false;
+        }
     }
 }

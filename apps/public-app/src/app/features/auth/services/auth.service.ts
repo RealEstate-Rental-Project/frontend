@@ -14,7 +14,7 @@ export class AuthService {
   );
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient) { }
 
   logout() {
     StorageUtils.clear();
@@ -22,23 +22,23 @@ export class AuthService {
     this.router.navigate(['/auth/login']);
   }
 
-  async getNonce(walletAddress: string): Promise<string> {
+  async getNonce(wallet: string): Promise<string> {
     const response = await lastValueFrom(
       this.http.get<{ nonce: string }>(
         `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.AUTH.NONCE}`,
         {
-          params: { wallet: walletAddress },
+          params: { wallet: wallet },
         }
       )
     );
     return response.nonce;
   }
 
-  async login(walletAddress: string, signature: string): Promise<any> {
+  async login(wallet: string, signature: string): Promise<any> {
     const response = await lastValueFrom(
       this.http.post<any>(
         `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.AUTH.LOGIN}`,
-        { wallet: walletAddress, signature },
+        { wallet: wallet, signature },
         {
           headers: { 'Content-Type': 'application/json' },
         }
@@ -48,7 +48,7 @@ export class AuthService {
     const { access_token, refresh_token } = response;
     StorageUtils.setAccessToken(access_token);
     StorageUtils.setRefreshToken(refresh_token);
-    StorageUtils.setWalletAddress(walletAddress);
+    StorageUtils.setwallet(wallet);
     this.isAuthenticatedSubject.next(true);
     return response;
   }

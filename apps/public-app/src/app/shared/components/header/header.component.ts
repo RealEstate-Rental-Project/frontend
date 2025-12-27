@@ -13,17 +13,17 @@ import { StorageUtils } from '../../../features/auth/utils/storage.utils';
 })
 export class HeaderComponent implements OnInit {
   isLoggedIn = false;
-  walletAddress: string | null = null;
+  wallet: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe((isLoggedIn) => {
       this.isLoggedIn = isLoggedIn;
       if (isLoggedIn) {
-        this.walletAddress = StorageUtils.getWalletAddress();
+        this.wallet = StorageUtils.getwallet();
       } else {
-        this.walletAddress = null;
+        this.wallet = null;
       }
     });
   }

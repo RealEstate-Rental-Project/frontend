@@ -33,7 +33,7 @@
         </div>
 
         <!-- Step 2: Register (Child Component) -->
-        <app-register *ngIf="showRegisterForm" [walletAddress]="walletAddress" (registerSuccess)="onRegisterSuccess()">
+        <app-register *ngIf="showRegisterForm" [wallet]="wallet" (registerSuccess)="onRegisterSuccess()">
         </app-register>
 
         <button *ngIf="showRegisterForm" (click)="showRegisterForm = false" class="btn-link">

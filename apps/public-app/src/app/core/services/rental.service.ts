@@ -29,7 +29,7 @@ export class RentalService {
     }
 
     getMyRentalRequests(): Observable<RentalRequest[]> {
-        const wallet = StorageUtils.getWalletAddress();
+        const wallet = StorageUtils.getwallet();
         if (!wallet) {
             return of([]);
         }

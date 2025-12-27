@@ -15,7 +15,7 @@ import { RegisterComponent } from '../register/register.component';
 export class LoginComponent {
     loading = false;
     error: string | null = null;
-    walletAddress: string | null = null;
+    wallet: string | null = null;
     showRegisterForm = false;
 
     constructor(
@@ -30,7 +30,7 @@ export class LoginComponent {
         try {
             // 1. Connect Wallet
             const address = await this.metamaskService.connectWallet();
-            this.walletAddress = address;
+            this.wallet = address;
 
             // 2. Get Nonce
             let nonce: string;

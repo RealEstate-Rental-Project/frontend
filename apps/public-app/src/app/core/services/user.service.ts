@@ -32,14 +32,29 @@ export class UserService {
                 lastName: 'Mercer',
                 email: 'alex.mercer@example.com',
                 description: 'Early adopter of Web3 technologies. Looking for a modern apartment in the city center.',
-                walletAddress: wallet,
+                wallet: wallet,
                 role: 'ROLE_USER'
             };
         }
     }
 
     async updateUser(user: User): Promise<User> {
-        // Implementation for update would go here
-        return user;
+        const token = StorageUtils.getAccessToken();
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+        // Assuming the endpoint is PUT /users/{id} or /users/profile
+        // Based on getUserByWallet, let's assume we can update by ID if available, or we might need a specific endpoint.
+        // Since we don't have the exact endpoint for update in the context, I'll assume a standard RESTful update by ID.
+        // However, the user entity has an ID.
+
+        if (!user.id) {
+            throw new Error('User ID is required for update');
+        }
+
+        return await lastValueFrom(this.http.patch<User>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}/${user.id}`,
+            user,
+            { headers }
+        ));
     }
 }

@@ -11,7 +11,7 @@ import { AuthService } from '../services/auth.service';
     styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit {
-    @Input() walletAddress: string | null = null;
+    @Input() wallet: string | null = null;
     @Output() registerSuccess = new EventEmitter<void>();
 
     registerForm: FormGroup;
@@ -33,12 +33,12 @@ export class RegisterComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // We don't put walletAddress in the form control as user input, 
+        // We don't put wallet in the form control as user input, 
         // but we will merge it when submitting.
     }
 
     async onSubmit() {
-        if (this.registerForm.invalid || !this.walletAddress) return;
+        if (this.registerForm.invalid || !this.wallet) return;
 
         this.loading = true;
         this.error = null;
@@ -47,7 +47,7 @@ export class RegisterComponent implements OnInit {
             const formValue = this.registerForm.getRawValue();
             const userData = {
                 ...formValue,
-                wallet: this.walletAddress
+                wallet: this.wallet
             };
 
             await this.authService.register(userData);
