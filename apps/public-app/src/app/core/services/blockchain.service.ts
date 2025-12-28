@@ -85,4 +85,46 @@ export class BlockchainService {
 
         return { receipt, propertyId };
     }
+
+    async reserveProperty(
+        propertyId: number,
+        durationInMonths: number,
+        optionalAdditionalDays: number,
+        totalAmountWei: string
+    ): Promise<{ receipt: TransactionReceipt, agreementId: number }> {
+        const contract = await this.getContract();
+
+        // Call smart contract
+        // function reserveProperty(uint256 _propertyId, uint256 _durationInMonths, uint256 _optionalAdditionalDays) payable
+        const tx = await contract['reserveProperty'](
+            propertyId,
+            durationInMonths,
+            optionalAdditionalDays,
+            { value: totalAmountWei }
+        );
+
+        const receipt = await tx.wait();
+
+        // Find AgreementCreated event
+        // Event signature: event AgreementCreated(uint256 indexed agreementId, uint256 indexed propertyId, address indexed tenant, uint256 rentAmount, uint256 securityDeposit);
+        let agreementId = -1;
+
+        for (const log of receipt.logs) {
+            try {
+                const parsedLog = contract.interface.parseLog(log);
+                if (parsedLog && parsedLog.name === 'AgreementCreated') {
+                    agreementId = Number(parsedLog.args[0]);
+                    break;
+                }
+            } catch (e) {
+                // Ignore logs that don't match the event
+            }
+        }
+
+        if (agreementId === -1) {
+            throw new Error('AgreementCreated event not found in transaction receipt');
+        }
+
+        return { receipt, agreementId };
+    }
 }

@@ -2,17 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PropertyService } from '../../../core/services/property.service';
+import { PropertyRequestsComponent } from '../property-requests/property-requests.component';
 
 @Component({
     selector: 'app-my-properties',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, PropertyRequestsComponent],
     templateUrl: './my-properties.component.html',
     styleUrls: ['./my-properties.component.scss']
 })
 export class MyPropertiesComponent implements OnInit {
     properties: any[] = [];
     loading = true;
+    selectedPropertyId: number | null = null;
 
     constructor(private propertyService: PropertyService) { }
 
@@ -27,5 +29,13 @@ export class MyPropertiesComponent implements OnInit {
                 this.loading = false;
             }
         });
+    }
+
+    openRequests(propertyId: number) {
+        this.selectedPropertyId = propertyId;
+    }
+
+    closeRequests() {
+        this.selectedPropertyId = null;
     }
 }

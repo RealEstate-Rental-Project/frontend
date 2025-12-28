@@ -49,8 +49,8 @@
                     <a [routerLink]="['/properties/edit', property.idProperty]" class="btn-edit">
                         Edit
                     </a>
-                    <button class="btn-stats" title="View Detailed Stats">
-                        📊
+                    <button (click)="openRequests(property.idProperty)" class="btn-requests" title="View Requests">
+                        <i class="fas fa-list-alt"></i> Requests
                     </button>
                 </div>
 
@@ -65,3 +65,6 @@
 
     </div>
 </div>
+
+<app-property-requests *ngIf="selectedPropertyId" [propertyId]="selectedPropertyId" (close)="closeRequests()">
+</app-property-requests>

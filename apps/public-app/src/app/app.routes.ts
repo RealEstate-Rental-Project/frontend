@@ -19,5 +19,6 @@ export const appRoutes: Route[] = [
     { path: 'about', component: AboutComponent },
     { path: 'profile', component: UserProfileComponent },
     { path: 'my-reservations', loadComponent: () => import('./features/rentals/my-reservations/my-reservations.component').then(m => m.MyReservationsComponent) },
+    { path: 'rentals/payment/:id', loadComponent: () => import('./features/rentals/payment/payment.component').then(m => m.PaymentComponent) },
     { path: '', component: HomeComponent },
 ];

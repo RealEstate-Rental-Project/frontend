@@ -59,6 +59,12 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-actions" *ngIf="reservation.status === 'ACCEPTED'">
+                        <button [routerLink]="['/rentals/payment', reservation.idRequest]" class="btn-pay">
+                            <i class="fas fa-credit-card"></i> Pay & Finalize
+                        </button>
+                    </div>
                 </div>
             </div>
         </ng-container>

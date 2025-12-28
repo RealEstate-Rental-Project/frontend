@@ -26,7 +26,12 @@ export const API_CONSTANTS = {
         },
         RENTAL_AGREEMENT: {
             BASE: '/api/rentalAgreement-microservice/rental-requests',
-            BY_TENANT: (tenantId: number) => `/api/rentalAgreement-microservice/rental-requests/tenant/${tenantId}`
+            BY_TENANT: (tenantId: number) => `/api/rentalAgreement-microservice/rental-requests/tenant/${tenantId}`,
+            BY_PROPERTY: (propertyId: number) => `/api/rentalAgreement-microservice/rental-requests/property/${propertyId}`,
+            UPDATE_STATUS: (requestId: number) => `/api/rentalAgreement-microservice/rental-requests/${requestId}/status`
+        },
+        RENTAL_CONTRACTS: {
+            BASE: '/api/rentalAgreement-microservice/rental-contracts'
         }
     }
 };

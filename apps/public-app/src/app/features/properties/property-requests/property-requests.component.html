@@ -1,0 +1,74 @@
+<div class="modal-backdrop" (click)="close.emit()"></div>
+
+<div class="modal-container">
+
+    <!-- Header -->
+    <div class="modal-header">
+        <h2>Rental Requests</h2>
+        <button (click)="close.emit()" class="btn-close">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Content -->
+    <div class="modal-content custom-scrollbar">
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading requests...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && requests.length === 0" class="empty-state">
+            <div class="icon-wrapper">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <h3>No requests yet</h3>
+            <p>When tenants request to rent this property, they'll appear here.</p>
+        </div>
+
+        <!-- Requests List -->
+        <div *ngIf="!loading && requests.length > 0" class="requests-list">
+            <div *ngFor="let request of requests" class="request-card">
+
+                <div class="request-info">
+                    <div class="tenant-avatar">
+                        T{{ request.tenantId }}
+                    </div>
+                    <div class="details">
+                        <div class="top-row">
+                            <h3>Tenant #{{ request.tenantId }}</h3>
+                            <span class="date">{{ request.createdAt | date:'mediumDate' }}</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-badge" [ngClass]="request.status">
+                                {{ request.status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="request-actions" *ngIf="request.status === 'PENDING'">
+                    <button (click)="updateStatus(request, 'ACCEPTED')" [disabled]="processingId === request.idRequest"
+                        class="btn-accept">
+                        <span *ngIf="processingId !== request.idRequest">Accept</span>
+                        <span *ngIf="processingId === request.idRequest">Processing...</span>
+                    </button>
+
+                    <button (click)="updateStatus(request, 'REJECTED')" [disabled]="processingId === request.idRequest"
+                        class="btn-reject">
+                        <span *ngIf="processingId !== request.idRequest">Reject</span>
+                        <span *ngIf="processingId === request.idRequest">Processing...</span>
+                    </button>
+                </div>
+
+                <div *ngIf="request.status !== 'PENDING'" class="no-actions">
+                    <span class="action-text">Action completed</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

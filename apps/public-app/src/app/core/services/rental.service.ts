@@ -68,4 +68,24 @@ export class RentalService {
             })
         );
     }
+
+    getRequestsByPropertyId(propertyId: number): Observable<RentalRequest[]> {
+        return this.http.get<RentalRequest[]>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.RENTAL_AGREEMENT.BY_PROPERTY(propertyId)}`
+        );
+    }
+
+    updateRequestStatus(requestId: number, status: string): Observable<any> {
+        return this.http.put(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.RENTAL_AGREEMENT.UPDATE_STATUS(requestId)}`,
+            { status }
+        );
+    }
+
+    createContract(contractData: any): Observable<any> {
+        return this.http.post(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.RENTAL_CONTRACTS.BASE}`,
+            contractData
+        );
+    }
 }

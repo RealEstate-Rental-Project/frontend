@@ -1,0 +1,108 @@
+<div class="payment-page">
+    <div class="container">
+        <div class="header">
+            <h1>Finalize Your Reservation</h1>
+            <p>Secure your rental with blockchain technology</p>
+        </div>
+
+        <div *ngIf="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading reservation details...</p>
+        </div>
+
+        <div *ngIf="!loading && request" class="payment-card">
+
+            <!-- Property Preview -->
+            <div class="property-header">
+                <div class="property-id">
+                    <i class="fas fa-home"></i>
+                    <span>Property #{{ request.propertyId }}</span>
+                </div>
+                <h2>{{ request.property.title }}</h2>
+                <p class="address">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ request.property.address }}
+                </p>
+            </div>
+
+            <div class="card-content">
+
+                <!-- Duration Section -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="step-number">1</span>
+                        <h3>Rental Duration</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Months</label>
+                            <div class="input-wrapper">
+                                <input type="number" [(ngModel)]="durationMonths" min="1" placeholder="1">
+                                <span class="suffix">months</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Extra Days</label>
+                            <div class="input-wrapper">
+                                <input type="number" [(ngModel)]="additionalDays" min="0" placeholder="0">
+                                <span class="suffix">days</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Payment Breakdown -->
+                <div class="section">
+                    <div class="section-title">
+                        <span class="step-number">2</span>
+                        <h3>Payment Summary</h3>
+                    </div>
+
+                    <div class="summary-box">
+                        <div class="summary-row">
+                            <span>First Month Rent</span>
+                            <span class="amount">{{ request.property.rentAmount }} ETH</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Security Deposit</span>
+                            <span class="amount">{{ request.property.securityDeposit }} ETH</span>
+                        </div>
+
+                        <div class="total-row">
+                            <div class="total-label">
+                                <span>Total Due Now</span>
+                                <small>(Includes gas fees estimation)</small>
+                            </div>
+                            <div class="total-amount">
+                                {{ totalAmount }} ETH
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="actions">
+                    <button (click)="processPayment()" [disabled]="processing" class="btn-pay">
+
+                        <span *ngIf="!processing" class="btn-content">
+                            <i class="fas fa-file-signature"></i>
+                            Pay & Sign Contract
+                        </span>
+
+                        <span *ngIf="processing" class="btn-content">
+                            <div class="spinner-small"></div>
+                            Processing Transaction...
+                        </span>
+                    </button>
+                    <p class="disclaimer">
+                        By clicking above, you agree to the smart contract terms. This action is irreversible on the
+                        blockchain.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
