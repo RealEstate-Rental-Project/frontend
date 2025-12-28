@@ -5,6 +5,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { PropertyCreationRequest, TypeOfRental, RoomCreationRequest, Property, PropertyType } from '../../../core/models/property.model';
 import { PropertyService } from '../../../core/services/property.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { BlockchainService } from '../../../core/services/blockchain.service';
 
 @Component({
     selector: 'app-create-property',
@@ -50,6 +51,7 @@ export class CreatePropertyComponent implements OnInit {
         private route: ActivatedRoute,
         private propertyService: PropertyService,
         private toastService: ToastService,
+        private blockchainService: BlockchainService,
         @Inject(PLATFORM_ID) private platformId: Object
     ) { }
 
@@ -230,7 +232,7 @@ export class CreatePropertyComponent implements OnInit {
         this.previewImage = null;
     }
 
-    submitProperty() {
+    async submitProperty() {
         console.log('Submitting Property:', this.property);
 
         if (this.isEditMode && this.propertyId) {
@@ -242,24 +244,50 @@ export class CreatePropertyComponent implements OnInit {
                 },
                 error: (err) => {
                     console.error('Error updating property', err);
-                    // Error is already handled by interceptor, but we can show specific message if needed
+                    this.toastService.show('Error updating property', 'error');
                 }
             });
         } else {
-            // Generate random onChainId for now
-            this.property.onChainId = Math.floor(Math.random() * 1000000);
+            try {
+                this.toastService.show('Please confirm the transaction in MetaMask...', 'info');
 
-            this.propertyService.createPropertyFlow(this.property).subscribe({
-                next: (res) => {
-                    console.log('Property created successfully', res);
-                    this.toastService.show('Property created successfully!', 'success');
-                    this.router.navigate(['/properties/my-listings']);
-                },
-                error: (err) => {
-                    console.error('Error creating property', err);
-                    // Error is already handled by interceptor
+                // 1. Blockchain Call
+                const result = await this.blockchainService.listProperty(
+                    this.property.address,
+                    this.property.description,
+                    this.property.rentAmount.toString(),
+                    this.property.securityDeposit.toString(),
+                    this.property.typeOfRental === TypeOfRental.DAILY ? 1 : 0
+                );
+
+                console.log('Blockchain transaction successful:', result);
+                this.toastService.show('Transaction confirmed! Saving to database...', 'success');
+
+                // 2. Set onChainId
+                this.property.onChainId = result.propertyId;
+
+                // 3. Backend Call
+                this.propertyService.createPropertyFlow(this.property).subscribe({
+                    next: (res) => {
+                        console.log('Property created successfully', res);
+                        this.toastService.show('Property listed successfully!', 'success');
+                        this.router.navigate(['/properties/my-listings']);
+                    },
+                    error: (err) => {
+                        console.error('Error creating property in DB', err);
+                        this.toastService.show('CRITICAL: Property on blockchain but failed to save in DB. Please contact support.', 'error');
+                        // Ideally we would have a retry mechanism or a way to manually sync
+                    }
+                });
+
+            } catch (error: any) {
+                console.error('Error listing property:', error);
+                if (error.code === 'ACTION_REJECTED') {
+                    this.toastService.show('Transaction rejected by user.', 'error');
+                } else {
+                    this.toastService.show('Failed to list property on blockchain.', 'error');
                 }
-            });
+            }
         }
     }
 }
