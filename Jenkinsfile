@@ -3,10 +3,10 @@ pipeline {
 
     environment {
         DOCKER_USER = 'yassinekamouss'
-        APPS = "public-app admin-app" 
+        APPS = "public-app admin-app"
         IMAGE_TAG = "${GIT_COMMIT.take(7)}"
-        // Pour éviter les soucis de mémoire Node avec Nx sur gros projets
-        NODE_OPTIONS = "--max-old-space-size=4096" 
+        // Optimisation mémoire pour Nx
+        NODE_OPTIONS = "--max-old-space-size=4096"
     }
 
     tools {
@@ -14,17 +14,33 @@ pipeline {
     }
 
     stages {
-        stage('Clean Workspace') {
+        stage('Initialize (Deep Clone)') {
             steps {
-                // Sécurité absolue : on part de zéro pour éviter les artefacts fantômes
-                cleanWs() 
-                checkout scm
+                cleanWs()
+                // --- CORRECTION CRITIQUE : Récupérer tout l'historique Git ---
+                // Sans ça, Nx ne peut pas comparer les commits et ne build rien.
+                checkout([
+                    $class: 'GitSCM',
+                    branches: scm.branches,
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[
+                        $class: 'CloneOption',
+                        noTags: false,
+                        reference: '',
+                        shallow: false, // Important : Désactive le clone superficiel
+                        depth: 0,       // 0 = Historique complet
+                        timeout: 30
+                    ]],
+                    submoduleCfg: [],
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
+                // On s'assure d'avoir les refs distantes pour la comparaison
+                sh 'git fetch --all'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Utilise le cache Jenkins si possible, sinon npm ci
                 sh 'npm ci --legacy-peer-deps'
             }
         }
@@ -32,13 +48,17 @@ pipeline {
         stage('Nx Build (Affected)') {
             steps {
                 script {
-                    // Logique pour gérer le build sur Main vs PR
+                    // Calcul de la base de comparaison
                     def baseRef = (env.BRANCH_NAME == 'main') ? 'HEAD~1' : 'origin/main'
-                    
                     echo "🔍 Comparaison Nx : Base=${baseRef} vs Head=HEAD"
-                    
-                    // On build. Si une app n'est pas touchée, dist/apps/lapp n'existera pas.
+
+                    // Lancement du build
                     sh "npx nx affected:build --base=${baseRef} --head=HEAD --configuration=production"
+                    
+                    // --- DEBUG --- 
+                    // Affiche ce qui a été créé pour qu'on soit sûr
+                    echo "📂 Vérification du contenu de dist :"
+                    sh "ls -R dist || echo '⚠️ Le dossier dist est vide ou inexistant'"
                 }
             }
         }
@@ -52,30 +72,48 @@ pipeline {
                         sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER_CRED" --password-stdin'
                         
                         appsList.each { appName ->
-                            // Vérifie le chemin exact généré par ton version de Nx (parfois sans /browser)
-                            if (fileExists("dist/apps/${appName}/browser")) {
-                                
-                                echo "🚀 Construction Docker pour : ${appName}"
+                            // --- CORRECTION CHEMIN : Gestion souple des dossiers ---
+                            def distPath = "dist/apps/${appName}"
+                            def browserPath = "${distPath}/browser"
+                            def finalPath = ""
+
+                            if (fileExists(browserPath)) {
+                                finalPath = browserPath
+                            } else if (fileExists(distPath)) {
+                                finalPath = distPath
+                            }
+
+                            if (finalPath != "") {
+                                echo "🚀 Build trouvé pour ${appName} dans : ${finalPath}"
                                 
                                 def imageUri = "${DOCKER_USER}/${appName}:${IMAGE_TAG}"
                                 def latestUri = "${DOCKER_USER}/${appName}:latest"
                                 
-                                // Grâce au .dockerignore, ce build est ultra rapide
+                                // On passe le bon chemin trouvé (finalPath) au Docker context si besoin, 
+                                // mais ici on utilise l'ARG pour le COPY.
+                                // IMPORTANT : Assurez-vous que votre Dockerfile copie bien ce dossier.
+                                
                                 sh "docker build -t ${imageUri} --build-arg APP_NAME=${appName} ."
                                 sh "docker push ${imageUri}"
                                 
-                                // Tag latest seulement si on est sur main (bonnes pratiques)
                                 if (env.BRANCH_NAME == 'main') {
                                     sh "docker tag ${imageUri} ${latestUri}"
                                     sh "docker push ${latestUri}"
                                 }
                             } else {
-                                echo "zzz Pas de changement pour ${appName}. On passe."
+                                echo "💤 Aucun build détecté pour ${appName} (Nx n'a rien généré). On passe."
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+            sh "docker system prune -f" 
         }
     }
 }
