@@ -1,107 +1,86 @@
 <div class="payment-page">
     <div class="container">
-        <div class="header">
-            <h1>Finalize Your Reservation</h1>
-            <p>Secure your rental with blockchain technology</p>
-        </div>
-
-        <div *ngIf="loading" class="loading-state">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="state-container">
             <div class="spinner"></div>
             <p>Loading reservation details...</p>
         </div>
 
-        <div *ngIf="!loading && request" class="payment-card">
+        <div *ngIf="!loading && request" class="payment-layout">
+            <!-- Left Column: Details & Form -->
+            <div class="main-content">
+                <header class="section-header">
+                    <h1>Finalize Reservation</h1>
+                    <p>Complete your rental agreement for <strong>{{ request.property.title }}</strong></p>
+                </header>
 
-            <!-- Property Preview -->
-            <div class="property-header">
-                <div class="property-id">
-                    <i class="fas fa-home"></i>
-                    <span>Property #{{ request.propertyId }}</span>
-                </div>
-                <h2>{{ request.property.title }}</h2>
-                <p class="address">
-                    <i class="fas fa-map-marker-alt"></i>
-                    {{ request.property.address }}
-                </p>
-            </div>
-
-            <div class="card-content">
-
-                <!-- Duration Section -->
-                <div class="section">
-                    <div class="section-title">
-                        <span class="step-number">1</span>
-                        <h3>Rental Duration</h3>
+                <div class="property-preview">
+                    <div class="info-row">
+                        <span class="label">Property ID</span>
+                        <span class="value">#{{ request.propertyId }}</span>
                     </div>
+                    <div class="info-row">
+                        <span class="label">Location</span>
+                        <span class="value">{{ request.property.address }}</span>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Rental Duration</h3>
                     <div class="form-grid">
                         <div class="form-group">
                             <label>Months</label>
                             <div class="input-wrapper">
                                 <input type="number" [(ngModel)]="durationMonths" min="1" placeholder="1">
-                                <span class="suffix">months</span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Extra Days</label>
                             <div class="input-wrapper">
                                 <input type="number" [(ngModel)]="additionalDays" min="0" placeholder="0">
-                                <span class="suffix">days</span>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="divider"></div>
+            <!-- Right Column: Summary & Action -->
+            <div class="sidebar">
+                <div class="summary-card">
+                    <h3>Payment Summary</h3>
 
-                <!-- Payment Breakdown -->
-                <div class="section">
-                    <div class="section-title">
-                        <span class="step-number">2</span>
-                        <h3>Payment Summary</h3>
-                    </div>
-
-                    <div class="summary-box">
-                        <div class="summary-row">
-                            <span>First Month Rent</span>
+                    <div class="summary-items">
+                        <div class="item">
+                            <span>Monthly Rent</span>
                             <span class="amount">{{ request.property.rentAmount }} ETH</span>
                         </div>
-                        <div class="summary-row">
+                        <div class="item">
                             <span>Security Deposit</span>
                             <span class="amount">{{ request.property.securityDeposit }} ETH</span>
                         </div>
+                    </div>
 
-                        <div class="total-row">
-                            <div class="total-label">
-                                <span>Total Due Now</span>
-                                <small>(Includes gas fees estimation)</small>
-                            </div>
-                            <div class="total-amount">
-                                {{ totalAmount }} ETH
-                            </div>
+                    <div class="total-section">
+                        <div class="total-label">
+                            <span>Total Due</span>
+                            <small>Includes estimated gas fees</small>
+                        </div>
+                        <div class="total-amount">
+                            {{ totalAmount }} ETH
                         </div>
                     </div>
-                </div>
 
-                <!-- Action Button -->
-                <div class="actions">
                     <button (click)="processPayment()" [disabled]="processing" class="btn-pay">
-
-                        <span *ngIf="!processing" class="btn-content">
-                            <i class="fas fa-file-signature"></i>
-                            Pay & Sign Contract
-                        </span>
-
-                        <span *ngIf="processing" class="btn-content">
-                            <div class="spinner-small"></div>
-                            Processing Transaction...
+                        <span *ngIf="!processing">Pay & Sign Contract</span>
+                        <span *ngIf="processing" class="processing-state">
+                            <div class="spinner-small"></div> Processing...
                         </span>
                     </button>
+
                     <p class="disclaimer">
-                        By clicking above, you agree to the smart contract terms. This action is irreversible on the
-                        blockchain.
+                        By confirming, you agree to the smart contract terms. This transaction is irreversible.
                     </p>
                 </div>
-
             </div>
         </div>
     </div>

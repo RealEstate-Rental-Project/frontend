@@ -1,68 +1,86 @@
 <div class="reservations-page">
     <div class="container">
-        <div class="header">
+        <header class="page-header">
             <h1>My Reservations</h1>
-            <p>Track the status of your rental requests</p>
-        </div>
+            <p class="subtitle">Manage your rental requests and agreements</p>
+        </header>
 
-        <div *ngIf="loading" class="loading-state">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="state-container">
             <div class="spinner"></div>
-            <p>Loading your reservations...</p>
+            <p>Loading...</p>
         </div>
 
-        <div *ngIf="error" class="error-state">
+        <!-- Error State -->
+        <div *ngIf="error" class="state-container error">
             <p>{{ error }}</p>
-            <button (click)="loadReservations()">Try Again</button>
+            <button class="btn-retry" (click)="loadReservations()">Try Again</button>
         </div>
 
         <ng-container *ngIf="reservations$ | async as reservations">
-            <div *ngIf="!loading && !error && reservations.length === 0" class="empty-state">
-                <p>You haven't made any reservations yet.</p>
-                <a routerLink="/properties" class="btn-browse">Browse Properties</a>
+            <!-- Empty State -->
+            <div *ngIf="!loading && !error && reservations.length === 0" class="state-container empty">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </div>
+                <h3>No reservations yet</h3>
+                <p>Start your journey by exploring our exclusive properties.</p>
+                <a routerLink="/properties" class="btn-primary">Browse Properties</a>
             </div>
 
-            <div *ngIf="!loading && !error && reservations.length > 0" class="reservations-list">
+            <!-- Reservations Grid -->
+            <div *ngIf="!loading && !error && reservations.length > 0" class="reservations-grid">
                 <div class="reservation-card" *ngFor="let reservation of reservations">
-                    <div class="card-header">
-                        <span class="date">Requested on {{ reservation.createdAt | date:'mediumDate' }}</span>
-                        <span class="status-badge" [ngClass]="getStatusClass(reservation.status)">
+                    <!-- Status Badge (Top Right) -->
+                    <div class="card-status">
+                        <span class="badge" [ngClass]="getStatusClass(reservation.status)">
                             {{ reservation.status }}
                         </span>
                     </div>
 
-                    <div class="card-body">
-                        <div class="property-info">
-                            <div class="property-image">
-                                <img [src]="reservation.property?.rooms?.[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'"
-                                    alt="Property Image">
-                            </div>
-                            <div class="property-text">
-                                <h3>Property #{{ reservation.propertyId }}</h3>
-                                <h4 *ngIf="reservation.property?.title">{{ reservation.property.title }}</h4>
-                                <a [routerLink]="['/properties', reservation.propertyId]" class="view-property">View
-                                    Property</a>
-                            </div>
+                    <div class="card-content">
+                        <!-- Property Image -->
+                        <div class="property-image">
+                            <img [src]="reservation.property?.rooms?.[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'"
+                                alt="Property">
                         </div>
 
-                        <div class="reservation-details">
-                            <div class="detail-item">
-                                <span class="label">Check-in</span>
-                                <span class="value">{{ reservation.startDate | date:'mediumDate' }}</span>
+                        <!-- Details -->
+                        <div class="property-details">
+                            <div class="property-header">
+                                <span class="property-id">ID: #{{ reservation.propertyId }}</span>
+                                <h3 class="property-title">
+                                    <a [routerLink]="['/properties', reservation.propertyId]">
+                                        {{ reservation.property?.title || 'Untitled Property' }}
+                                    </a>
+                                </h3>
                             </div>
-                            <div class="detail-item">
-                                <span class="label">Check-out</span>
-                                <span class="value">{{ reservation.endDate | date:'mediumDate' }}</span>
-                            </div>
-                            <div class="detail-item" *ngIf="reservation.totalPrice">
-                                <span class="label">Total Price</span>
-                                <span class="value">{{ reservation.totalPrice }} ETH</span>
+
+                            <div class="reservation-info">
+                                <div class="info-item">
+                                    <span class="label">Check-in</span>
+                                    <span class="value">{{ reservation.startDate | date:'mediumDate' }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Check-out</span>
+                                    <span class="value">{{ reservation.endDate | date:'mediumDate' }}</span>
+                                </div>
+                                <div class="info-item price" *ngIf="reservation.totalPrice">
+                                    <span class="label">Total</span>
+                                    <span class="value">{{ reservation.totalPrice }} ETH</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card-actions" *ngIf="reservation.status === 'ACCEPTED'">
-                        <button [routerLink]="['/rentals/payment', reservation.idRequest]" class="btn-pay">
-                            <i class="fas fa-credit-card"></i> Pay & Finalize
+                    <!-- Actions Footer -->
+                    <div class="card-footer" *ngIf="reservation.status === 'ACCEPTED'">
+                        <button [routerLink]="['/rentals/payment', reservation.idRequest]" class="btn-action">
+                            Finalize & Pay
                         </button>
                     </div>
                 </div>

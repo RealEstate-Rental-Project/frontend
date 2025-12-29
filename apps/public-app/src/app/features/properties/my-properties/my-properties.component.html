@@ -7,53 +7,71 @@
         </div>
 
         <!-- Properties List -->
-        <div class="properties-list" *ngIf="!loading; else loadingTemplate">
-            <div class="property-card" *ngFor="let property of properties">
+        <div class="properties-container" *ngIf="!loading; else loadingTemplate">
 
-                <!-- Image -->
-                <div class="card-image">
-                    <img [src]="property.rooms[0]?.roomImages[0]?.url || 'assets/placeholder.webp'"
-                        [alt]="property.title">
+            <!-- Empty State -->
+            <div *ngIf="properties.length === 0" class="empty-state">
+                <div class="empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
                 </div>
+                <h3>No properties listed</h3>
+                <p>You haven't listed any properties yet. Start earning by adding your first property.</p>
+                <a routerLink="/properties/create" class="btn-primary">Add New Property</a>
+            </div>
 
-                <!-- Info -->
-                <div class="card-info">
-                    <div class="info-header">
-                        <h2>{{ property.title }}</h2>
-                        <span class="status-badge" [class.active]="property.isActive">
-                            <span class="dot"></span> {{ property.isActive ? 'Active' : 'Inactive' }}
-                        </span>
+            <!-- List -->
+            <div class="properties-list" *ngIf="properties.length > 0">
+                <div class="property-card" *ngFor="let property of properties">
+
+                    <!-- Image -->
+                    <div class="card-image">
+                        <img [src]="property.rooms[0]?.roomImages[0]?.url || 'assets/placeholder.webp'"
+                            [alt]="property.title">
                     </div>
-                    <p class="address">{{ property.address }}</p>
-                    <p class="price">{{ property.rentPerMonth }} ETH / month</p>
+
+                    <!-- Info -->
+                    <div class="card-info">
+                        <div class="info-header">
+                            <h2>{{ property.title }}</h2>
+                            <span class="status-badge" [class.active]="property.isActive">
+                                <span class="dot"></span> {{ property.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
+                        <p class="address">{{ property.address }}</p>
+                        <p class="price">{{ property.rentPerMonth }} ETH / month</p>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">{{ property.stats.views }}</span>
+                            <span class="stat-label">Views</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ property.stats.bookings }}</span>
+                            <span class="stat-label">Bookings</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ property.stats.revenue }} ETH</span>
+                            <span class="stat-label">Revenue</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="card-actions">
+                        <a [routerLink]="['/properties/edit', property.idProperty]" class="btn-edit">
+                            Edit
+                        </a>
+                        <button (click)="openRequests(property.idProperty)" class="btn-requests" title="View Requests">
+                            <i class="fas fa-list-alt"></i> Requests
+                        </button>
+                    </div>
+
                 </div>
-
-                <!-- Stats -->
-                <div class="card-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">{{ property.stats.views }}</span>
-                        <span class="stat-label">Views</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ property.stats.bookings }}</span>
-                        <span class="stat-label">Bookings</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ property.stats.revenue }} ETH</span>
-                        <span class="stat-label">Revenue</span>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div class="card-actions">
-                    <a [routerLink]="['/properties/edit', property.idProperty]" class="btn-edit">
-                        Edit
-                    </a>
-                    <button (click)="openRequests(property.idProperty)" class="btn-requests" title="View Requests">
-                        <i class="fas fa-list-alt"></i> Requests
-                    </button>
-                </div>
-
             </div>
         </div>
 
