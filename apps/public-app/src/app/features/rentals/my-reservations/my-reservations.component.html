@@ -83,6 +83,13 @@
                             Finalize & Pay
                         </button>
                     </div>
+
+                    <div class="card-footer"
+                        *ngIf="reservation.status === 'PENDING_RESERVATION' || reservation.status === 'ACTIVE'">
+                        <button routerLink="/rentals/my-contracts" class="btn-action btn-secondary">
+                            View Contract
+                        </button>
+                    </div>
                 </div>
             </div>
         </ng-container>

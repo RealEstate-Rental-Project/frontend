@@ -9,7 +9,10 @@ export enum RentalStatus {
     ACCEPTED = 'ACCEPTED',
     REJECTED = 'REJECTED',
     EXPIRED = 'EXPIRED',
-    CANCELLED = 'CANCELLED'
+    CANCELLED = 'CANCELLED',
+    PENDING_RESERVATION = 'PENDING_RESERVATION',
+    ACTIVE = 'ACTIVE',
+    COMPLETED = 'COMPLETED'
 }
 
 export interface RentalRequest {

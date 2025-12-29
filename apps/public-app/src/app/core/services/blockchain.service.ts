@@ -127,4 +127,15 @@ export class BlockchainService {
 
         return { receipt, agreementId };
     }
+
+    async activateAgreement(agreementId: number): Promise<TransactionReceipt> {
+        const contract = await this.getContract();
+
+        // Call smart contract
+        // function activateAgreement(uint256 _agreementId) external
+        const tx = await contract['activateAgreement'](agreementId);
+
+        const receipt = await tx.wait();
+        return receipt;
+    }
 }

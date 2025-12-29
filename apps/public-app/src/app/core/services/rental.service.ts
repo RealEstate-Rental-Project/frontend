@@ -88,4 +88,36 @@ export class RentalService {
             contractData
         );
     }
+
+    getMyContracts(): Observable<any[]> {
+        return this.http.get<any[]>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.RENTAL_CONTRACTS.USER_ME}`
+        ).pipe(
+            switchMap(contracts => {
+                if (!contracts || contracts.length === 0) return of([]);
+
+                const hydratedContracts$ = contracts.map(contract => {
+                    if (!contract.propertyId) {
+                        return of({ ...contract, property: null });
+                    }
+                    return this.propertyService.getPropertyById(String(contract.propertyId)).pipe(
+                        map(property => ({
+                            ...contract,
+                            property: property
+                        })),
+                        catchError(() => of({ ...contract, property: null }))
+                    );
+                });
+
+                return forkJoin(hydratedContracts$);
+            })
+        );
+    }
+
+    confirmKeyDelivery(contractId: number): Observable<any> {
+        return this.http.put(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.RENTAL_CONTRACTS.KEY_DELIVERY(contractId)}`,
+            { isKeyDelivered: true }
+        );
+    }
 }

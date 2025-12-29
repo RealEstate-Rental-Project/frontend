@@ -31,7 +31,9 @@ export const API_CONSTANTS = {
             UPDATE_STATUS: (requestId: number) => `/api/rentalAgreement-microservice/rental-requests/${requestId}/status`
         },
         RENTAL_CONTRACTS: {
-            BASE: '/api/rentalAgreement-microservice/rental-contracts'
+            BASE: '/api/rentalAgreement-microservice/rental-contracts',
+            USER_ME: '/api/rentalAgreement-microservice/rental-contracts/user/me',
+            KEY_DELIVERY: (id: number) => `/api/rentalAgreement-microservice/rental-contracts/${id}/key-delivery`
         }
     }
 };

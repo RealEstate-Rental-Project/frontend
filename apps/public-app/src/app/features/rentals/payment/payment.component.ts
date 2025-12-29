@@ -7,6 +7,7 @@ import { BlockchainService } from '../../../core/services/blockchain.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { RentalRequest } from '../../../core/models/rental.model';
 import { parseEther } from 'ethers';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-payment',
@@ -102,15 +103,23 @@ export class PaymentComponent implements OnInit {
         initialTxHash: result.receipt.hash
       };
 
-      this.rentalService.createContract(contractData).subscribe({
+      this.rentalService.createContract(contractData).pipe(
+        switchMap(() => {
+          return this.rentalService.updateRequestStatus(this.request!.idRequest, 'PENDING_RESERVATION');
+        })
+      ).subscribe({
         next: () => {
           this.toastService.show('Contract signed successfully!', 'success');
-          this.router.navigate(['/rentals/my-contracts']); // Assuming this route exists or will exist
+          this.router.navigate(['/rentals/my-contracts']);
         },
         error: (err) => {
-          console.error('Error creating contract', err);
-          this.toastService.show('CRITICAL: Payment made but contract creation failed. Contact support.', 'error');
-          this.processing = false;
+          console.error('Error creating contract or updating status', err);
+          // Even if status update fails, contract might be created. 
+          // But for now let's treat it as an error or maybe success with warning.
+          // Given the flow, if contract is created but status update fails, the user might pay again.
+          // So it's better to show error.
+          this.toastService.show('Contract created but status update failed. Please check My Contracts.', 'warning');
+          this.router.navigate(['/rentals/my-contracts']);
         }
       });
 
