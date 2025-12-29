@@ -45,16 +45,28 @@ pipeline {
             }
         }
 
-        stage('Nx Build (FORCE)') {
+        stage('Nx Build (Affected)') {
             steps {
                 script {
-                    echo "🔥 MODE FORCE ACTIVÉ : On ignore 'affected' et on construit tout !"
+                    def baseRef = (env.BRANCH_NAME == 'main') ? 'HEAD~1' : 'origin/main'
                     
-                    // On utilise run-many avec --all au lieu de affected
-                    sh "npx nx run-many --target=build --all --configuration=production --parallel"
+                    echo "🔍 INTELLIGENCE NX :"
+                    echo "   - Branche actuelle : ${env.BRANCH_NAME}"
+                    echo "   - Base de comparaison : ${baseRef}"
+                    echo "   - Cible (Head) : HEAD"
                     
-                    // Vérification immédiate
-                    sh "ls -R dist || echo '❌ Toujours pas de dossier dist...'"
+                    // 2. Commande Nx Affected
+                    try {
+                        sh "npx nx affected:build --base=${baseRef} --head=HEAD --configuration=production"
+                    } catch (Exception e) {
+                        echo "⚠️ Erreur ou rien à builder. Vérifions si dist existe..."
+                    }
+                    
+                    def distExists = fileExists('dist')
+                    if (!distExists) {
+                         echo "🤔 Nx n'a rien détecté (peut-être premier build ?). On force le build pour assurer le Docker."
+                         sh "npx nx run-many --target=build --all --configuration=production --parallel"
+                    }
                 }
             }
         }
