@@ -45,20 +45,16 @@ pipeline {
             }
         }
 
-        stage('Nx Build (Affected)') {
+        stage('Nx Build (FORCE)') {
             steps {
                 script {
-                    // Calcul de la base de comparaison
-                    def baseRef = (env.BRANCH_NAME == 'main') ? 'HEAD~1' : 'origin/main'
-                    echo "🔍 Comparaison Nx : Base=${baseRef} vs Head=HEAD"
-
-                    // Lancement du build
-                    sh "npx nx affected:build --base=${baseRef} --head=HEAD --configuration=production"
+                    echo "🔥 MODE FORCE ACTIVÉ : On ignore 'affected' et on construit tout !"
                     
-                    // --- DEBUG --- 
-                    // Affiche ce qui a été créé pour qu'on soit sûr
-                    echo "📂 Vérification du contenu de dist :"
-                    sh "ls -R dist || echo '⚠️ Le dossier dist est vide ou inexistant'"
+                    // On utilise run-many avec --all au lieu de affected
+                    sh "npx nx run-many --target=build --all --configuration=production --parallel"
+                    
+                    // Vérification immédiate
+                    sh "ls -R dist || echo '❌ Toujours pas de dossier dist...'"
                 }
             }
         }
