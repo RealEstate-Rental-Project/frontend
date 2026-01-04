@@ -1,5 +1,7 @@
+import { environment } from '../../../environments/environment';
+
 export const API_CONSTANTS = {
-    GATEWAY_URL: 'http://localhost:8880',
+    GATEWAY_URL: environment.gatewayUrl,
     ENDPOINTS: {
         AUTH: {
             NONCE: '/api/auth/metamask/nonce',
