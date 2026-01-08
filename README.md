@@ -78,10 +78,10 @@ The project follows a **Hybrid Architecture** leveraging the best of Web2 and We
 
 ```mermaid
 graph TD
-    User[User / Browser] -->|HTTPS| Frontend[Angular Frontend (Nx)]
+    User[User Browser] -->|HTTPS| Frontend[Angular Nx Frontend]
     Frontend -->|REST API| Gateway[API Gateway]
-    Gateway -->|HTTP| Microservices[Java Spring Boot Microservices]
-    Frontend -->|JSON-RPC| Blockchain[Ethereum Blockchain]
+    Gateway -->|HTTP| Microservices[Spring Boot Microservices]
+    Frontend -->|JSON RPC| Blockchain[Ethereum Blockchain]
     Blockchain -->|Events| Frontend
 ```
 
