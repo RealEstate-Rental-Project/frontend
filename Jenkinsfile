@@ -72,51 +72,55 @@ pipeline {
         }
 
         stage('Docker Build & Push') {
-            steps {
-                script {
-                    def appsList = APPS.split(' ')
-                    
-                    withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER_CRED')]) {
-                        sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER_CRED" --password-stdin'
-                        
-                        appsList.each { appName ->
-                            // --- CORRECTION CHEMIN : Gestion souple des dossiers ---
-                            def distPath = "dist/apps/${appName}"
-                            def browserPath = "${distPath}/browser"
-                            def finalPath = ""
-
-                            if (fileExists(browserPath)) {
-                                finalPath = browserPath
-                            } else if (fileExists(distPath)) {
-                                finalPath = distPath
-                            }
-
-                            if (finalPath != "") {
-                                echo "🚀 Build trouvé pour ${appName} dans : ${finalPath}"
-                                
-                                def imageUri = "${DOCKER_USER}/${appName}:${IMAGE_TAG}"
-                                def latestUri = "${DOCKER_USER}/${appName}:latest"
-                                
-                                // On passe le bon chemin trouvé (finalPath) au Docker context si besoin, 
-                                // mais ici on utilise l'ARG pour le COPY.
-                                // IMPORTANT : Assurez-vous que votre Dockerfile copie bien ce dossier.
-                                
-                                sh "docker build -t ${imageUri} --build-arg APP_NAME=${appName} ."
-                                sh "docker push ${imageUri}"
-                                
-                                if (env.BRANCH_NAME == 'main') {
-                                    sh "docker tag ${imageUri} ${latestUri}"
-                                    sh "docker push ${latestUri}"
-                                }
-                            } else {
-                                echo "💤 Aucun build détecté pour ${appName} (Nx n'a rien généré). On passe."
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+          steps {
+              script {
+                  def appsList = APPS.split(' ')
+                  
+                  withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER_CRED')]) {
+                      sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER_CRED" --password-stdin'
+                      
+                      appsList.each { appName ->
+                          def distPath = "dist/apps/${appName}"
+                          def browserPath = "${distPath}/browser"
+                          def finalPath = ""
+      
+                          if (fileExists(browserPath)) {
+                              finalPath = browserPath
+                          } else if (fileExists(distPath)) {
+                              finalPath = distPath
+                          }
+      
+                          if (finalPath != "") {
+                              echo "🚀 Préparation du build pour ${appName}"
+                              
+                              def imageUri = "${DOCKER_USER}/${appName}:${IMAGE_TAG}"
+                              def latestUri = "${DOCKER_USER}/${appName}:latest"
+                              
+                              // --- APPROCHE DOUBLE TAG ---
+                              // On prépare la commande de build de base
+                              def buildArgs = "-t ${imageUri} "
+                              
+                              // Si on est sur la branche main, on ajoute le second tag 'latest' au build
+                              if (env.BRANCH_NAME == 'main') {
+                                  buildArgs += "-t ${latestUri} "
+                              }
+                              
+                              // Exécution du build unique avec un ou deux tags
+                              sh "docker build ${buildArgs} --build-arg APP_NAME=${appName} ."
+                              
+                              // Push des images
+                              sh "docker push ${imageUri}"
+                              if (env.BRANCH_NAME == 'main') {
+                                  sh "docker push ${latestUri}"
+                              }
+                          } else {
+                              echo "💤 Aucun build détecté pour ${appName}. On passe."
+                          }
+                      }
+                  }
+              }
+          }
+      }
 
     post {
         always {
