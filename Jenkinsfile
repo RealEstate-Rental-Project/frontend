@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_USER = 'yassinekamouss'
         APPS = "public-app admin-app"
+        // Récupère les 7 premiers caractères du commit pour le tag
         IMAGE_TAG = "${GIT_COMMIT.take(7)}"
         // Optimisation mémoire pour Nx
         NODE_OPTIONS = "--max-old-space-size=4096"
@@ -17,8 +18,7 @@ pipeline {
         stage('Initialize (Deep Clone)') {
             steps {
                 cleanWs()
-                // --- CORRECTION CRITIQUE : Récupérer tout l'historique Git ---
-                // Sans ça, Nx ne peut pas comparer les commits et ne build rien.
+                // Récupération complète de l'historique pour que Nx puisse comparer les commits
                 checkout([
                     $class: 'GitSCM',
                     branches: scm.branches,
@@ -27,14 +27,13 @@ pipeline {
                         $class: 'CloneOption',
                         noTags: false,
                         reference: '',
-                        shallow: false, // Important : Désactive le clone superficiel
-                        depth: 0,       // 0 = Historique complet
+                        shallow: false,
+                        depth: 0,
                         timeout: 30
                     ]],
                     submoduleCfg: [],
                     userRemoteConfigs: scm.userRemoteConfigs
                 ])
-                // On s'assure d'avoir les refs distantes pour la comparaison
                 sh 'git fetch --all'
             }
         }
@@ -48,23 +47,21 @@ pipeline {
         stage('Nx Build (Affected)') {
             steps {
                 script {
-                    def baseRef = (env.BRANCH_NAME == 'main') ? 'HEAD~1' : 'origin/main'
+                    // Dans un pipeline simple, on utilise env.GIT_BRANCH
+                    def currentBranch = env.GIT_BRANCH ?: ""
+                    def baseRef = currentBranch.contains("main") ? 'HEAD~1' : 'origin/main'
                     
-                    echo "🔍 INTELLIGENCE NX :"
-                    echo "   - Branche actuelle : ${env.BRANCH_NAME}"
-                    echo "   - Base de comparaison : ${baseRef}"
-                    echo "   - Cible (Head) : HEAD"
+                    echo "🔍 INTELLIGENCE NX : Branche=${currentBranch}, Base=${baseRef}"
                     
-                    // 2. Commande Nx Affected
                     try {
                         sh "npx nx affected:build --base=${baseRef} --head=HEAD --configuration=production"
                     } catch (Exception e) {
-                        echo "⚠️ Erreur ou rien à builder. Vérifions si dist existe..."
+                        echo "⚠️ Rien à builder selon Nx."
                     }
                     
-                    def distExists = fileExists('dist')
-                    if (!distExists) {
-                         echo "🤔 Nx n'a rien détecté (peut-être premier build ?). On force le build pour assurer le Docker."
+                    // Si Nx n'a rien détecté, on force le build pour garantir la présence des fichiers pour Docker
+                    if (!fileExists('dist')) {
+                         echo "🤔 Dossier dist absent, lancement de run-many..."
                          sh "npx nx run-many --target=build --all --configuration=production --parallel"
                     }
                 }
@@ -74,54 +71,60 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
+                    // Détection de la branche principale (main ou origin/main)
+                    def currentBranch = env.GIT_BRANCH ?: ""
+                    def isMainBranch = currentBranch.contains("main")
+                    
+                    echo "--- DÉPLOIEMENT ---"
+                    echo "Branche détectée : ${currentBranch}"
+                    echo "Tag latest activé : ${isMainBranch}"
+
                     def appsList = APPS.split(' ')
                     
                     withCredentials([usernamePassword(credentialsId: 'DOCKER_HUB', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER_CRED')]) {
                         sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER_CRED" --password-stdin'
                         
                         appsList.each { appName ->
-                            // --- CORRECTION CHEMIN : Gestion souple des dossiers ---
                             def distPath = "dist/apps/${appName}"
                             def browserPath = "${distPath}/browser"
-                            def finalPath = ""
-
-                            if (fileExists(browserPath)) {
-                                finalPath = browserPath
-                            } else if (fileExists(distPath)) {
-                                finalPath = distPath
-                            }
+                            def finalPath = fileExists(browserPath) ? browserPath : (fileExists(distPath) ? distPath : "")
 
                             if (finalPath != "") {
-                                echo "🚀 Build trouvé pour ${appName} dans : ${finalPath}"
-                                
+                                echo "🚀 Build de l'image pour : ${appName}"
                                 def imageUri = "${DOCKER_USER}/${appName}:${IMAGE_TAG}"
                                 def latestUri = "${DOCKER_USER}/${appName}:latest"
                                 
-                                // On passe le bon chemin trouvé (finalPath) au Docker context si besoin, 
-                                // mais ici on utilise l'ARG pour le COPY.
-                                // IMPORTANT : Assurez-vous que votre Dockerfile copie bien ce dossier.
+                                // Approche Double Tag au build
+                                def buildCmd = "docker build -t ${imageUri} "
+                                if (isMainBranch) {
+                                    buildCmd += "-t ${latestUri} "
+                                }
+                                buildCmd += "--build-arg APP_NAME=${appName} ."
                                 
-                                sh "docker build -t ${imageUri} --build-arg APP_NAME=${appName} ."
+                                sh buildCmd
+                                
+                                // Push vers Docker Hub
                                 sh "docker push ${imageUri}"
-                                
-                                if (env.BRANCH_NAME == 'main') {
-                                    sh "docker tag ${imageUri} ${latestUri}"
+                                if (isMainBranch) {
                                     sh "docker push ${latestUri}"
                                 }
                             } else {
-                                echo "💤 Aucun build détecté pour ${appName} (Nx n'a rien généré). On passe."
+                                echo "💤 Aucun build trouvé pour ${appName}, passage à la suivante."
                             }
                         }
                     }
                 }
             }
         }
-    }
+    } // Fin des stages
 
     post {
         always {
             cleanWs()
             sh "docker system prune -f" 
+        }
+        success {
+            echo "✅ Pipeline terminé avec succès !"
         }
     }
 }
