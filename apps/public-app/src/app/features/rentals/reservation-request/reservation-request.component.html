@@ -1,73 +1,107 @@
 <div class="reservation-overlay" (click)="onClose()">
-    <div class="reservation-panel" (click)="$event.stopPropagation()">
-        <div class="panel-header">
-            <h2>Request Reservation</h2>
-            <button class="btn-close" (click)="onClose()">×</button>
-        </div>
-
-        <div class="property-summary" *ngIf="property">
-            <div class="summary-image">
-                <img [src]="property.rooms[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'" [alt]="property.title">
-            </div>
-            <div class="summary-details">
-                <h3>{{ property.title }}</h3>
-                <span class="badge">{{ property.typeOfRental === 'MONTHLY' ? 'Long Term' : 'Short Term' }}</span>
-                <p class="price">{{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span></p>
-            </div>
-        </div>
-
-        <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="startDate">Check-in</label>
-                <input type="date" id="startDate" formControlName="startDate">
-                <div class="error-msg"
-                    *ngIf="reservationForm.get('startDate')?.touched && reservationForm.get('startDate')?.errors?.['required']">
-                    Start date is required</div>
-                <div class="error-msg" *ngIf="reservationForm.get('startDate')?.errors?.['pastDate']">Date cannot be in
-                    the past</div>
-            </div>
-
-            <div class="form-group">
-                <label for="endDate">Check-out</label>
-                <input type="date" id="endDate" formControlName="endDate">
-                <div class="error-msg"
-                    *ngIf="reservationForm.get('endDate')?.touched && reservationForm.get('endDate')?.errors?.['required']">
-                    End date is required</div>
-                <div class="error-msg" *ngIf="reservationForm.errors?.['invalidRange']">End date must be after start
-                    date</div>
-            </div>
-
-            <div class="price-breakdown" *ngIf="durationDays > 0">
-                <div class="breakdown-row">
-                    <span>{{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }} x {{ durationDays }}
-                        nights</span>
-                    <span>{{ proratedRent | currency:'USD':'symbol':'1.0-0' }}</span>
-                </div>
-                <div class="breakdown-row">
-                    <span>Security Deposit</span>
-                    <span>{{ property.securityDeposit | currency:'USD':'symbol':'1.0-0' }}</span>
-                </div>
-                <div class="breakdown-divider"></div>
-                <div class="breakdown-row total">
-                    <span>Total (Estimated)</span>
-                    <span>{{ totalPrice | currency:'USD':'symbol':'1.0-0' }}</span>
-                </div>
-                <p class="deposit-note">
-                    <small>The security deposit will be locked on the blockchain upon approval.</small>
-                </p>
-            </div>
-
-            <div class="messages">
-                <div class="error-alert" *ngIf="errorMessage">{{ errorMessage }}</div>
-                <div class="success-alert" *ngIf="successMessage">{{ successMessage }}</div>
-            </div>
-
-            <div class="panel-footer">
-                <button type="submit" class="btn-submit" [disabled]="reservationForm.invalid || isLoading">
-                    <span *ngIf="!isLoading">Send Request</span>
-                    <span *ngIf="isLoading">Sending...</span>
-                </button>
-            </div>
-        </form>
+  <div class="reservation-panel" (click)="$event.stopPropagation()">
+    <div class="panel-header">
+      <h2>Request Reservation</h2>
+      <button class="btn-close" (click)="onClose()">×</button>
     </div>
+
+    <div class="property-summary" *ngIf="property">
+      <div class="summary-image">
+        <img
+          [src]="property.rooms[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'"
+          [alt]="property.title"
+        />
+      </div>
+      <div class="summary-details">
+        <h3>{{ property.title }}</h3>
+        <span class="badge">{{
+          property.typeOfRental === 'MONTHLY' ? 'Long Term' : 'Short Term'
+        }}</span>
+        <p class="price">
+          {{ property.rentAmount | currency : 'USD' : 'symbol' : '1.0-0'
+          }}<span>/mo</span>
+        </p>
+      </div>
+    </div>
+
+    <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="startDate">Check-in</label>
+        <input type="date" id="startDate" formControlName="startDate" />
+        <div
+          class="error-msg"
+          *ngIf="reservationForm.get('startDate')?.touched && reservationForm.get('startDate')?.errors?.['required']"
+        >
+          Start date is required
+        </div>
+        <div
+          class="error-msg"
+          *ngIf="reservationForm.get('startDate')?.errors?.['pastDate']"
+        >
+          Date cannot be in the past
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="endDate">Check-out</label>
+        <input type="date" id="endDate" formControlName="endDate" />
+        <div
+          class="error-msg"
+          *ngIf="reservationForm.get('endDate')?.touched && reservationForm.get('endDate')?.errors?.['required']"
+        >
+          End date is required
+        </div>
+        <div class="error-msg" *ngIf="reservationForm.errors?.['invalidRange']">
+          End date must be after start date
+        </div>
+      </div>
+
+      <div class="price-breakdown" *ngIf="durationDays > 0">
+        <div class="breakdown-row">
+          <span
+            >{{ property.rentAmount | currency : 'USD' : 'symbol' : '1.0-0' }} x
+            {{ durationDays }} nights</span
+          >
+          <span>{{
+            proratedRent | currency : 'USD' : 'symbol' : '1.0-0'
+          }}</span>
+        </div>
+        <div class="breakdown-row">
+          <span>Security Deposit</span>
+          <span>{{
+            property.securityDeposit | currency : 'USD' : 'symbol' : '1.0-0'
+          }}</span>
+        </div>
+        <div class="breakdown-divider"></div>
+        <div class="breakdown-row total">
+          <span>Total (Estimated)</span>
+          <span>{{ totalPrice | currency : 'USD' : 'symbol' : '1.0-0' }}</span>
+        </div>
+        <p class="deposit-note">
+          <small
+            >The security deposit will be locked on the blockchain upon
+            approval.</small
+          >
+        </p>
+      </div>
+
+      <div class="messages">
+        <div class="error-alert" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <div class="success-alert" *ngIf="successMessage">
+          {{ successMessage }}
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="reservationForm.invalid || isLoading || isOwner"
+        >
+          <span *ngIf="!isLoading">Send Request</span>
+          <span *ngIf="isLoading">Sending...</span>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

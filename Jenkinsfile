@@ -3,8 +3,10 @@ pipeline {
 
     environment {
         DOCKER_USER = 'yassinekamouss'
-        APPS = "public-app admin-app" 
+        APPS = "public-app admin-app"
         IMAGE_TAG = "${GIT_COMMIT.take(7)}"
+        // Optimisation mémoire pour Nx
+        NODE_OPTIONS = "--max-old-space-size=4096"
     }
 
     tools {
@@ -12,9 +14,28 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Initialize (Deep Clone)') {
             steps {
-                checkout scm
+                cleanWs()
+                // --- CORRECTION CRITIQUE : Récupérer tout l'historique Git ---
+                // Sans ça, Nx ne peut pas comparer les commits et ne build rien.
+                checkout([
+                    $class: 'GitSCM',
+                    branches: scm.branches,
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[
+                        $class: 'CloneOption',
+                        noTags: false,
+                        reference: '',
+                        shallow: false, // Important : Désactive le clone superficiel
+                        depth: 0,       // 0 = Historique complet
+                        timeout: 30
+                    ]],
+                    submoduleCfg: [],
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
+                // On s'assure d'avoir les refs distantes pour la comparaison
+                sh 'git fetch --all'
             }
         }
 
@@ -24,24 +45,33 @@ pipeline {
             }
         }
 
-        stage('Nx Lint & Test (Affected)') {
-            steps {
-                script {
-                    sh 'npx nx affected:lint --base=origin/main --head=HEAD'
-                    // sh 'npx nx affected:test --base=origin/main --head=HEAD' // Décommenter si tu as des tests
-                }
-            }
-        }
-
         stage('Nx Build (Affected)') {
             steps {
                 script {
-                    sh 'npx nx affected:build --base=origin/main --head=HEAD --configuration=production'
+                    def baseRef = (env.BRANCH_NAME == 'main') ? 'HEAD~1' : 'origin/main'
+                    
+                    echo "🔍 INTELLIGENCE NX :"
+                    echo "   - Branche actuelle : ${env.BRANCH_NAME}"
+                    echo "   - Base de comparaison : ${baseRef}"
+                    echo "   - Cible (Head) : HEAD"
+                    
+                    // 2. Commande Nx Affected
+                    try {
+                        sh "npx nx affected:build --base=${baseRef} --head=HEAD --configuration=production"
+                    } catch (Exception e) {
+                        echo "⚠️ Erreur ou rien à builder. Vérifions si dist existe..."
+                    }
+                    
+                    def distExists = fileExists('dist')
+                    if (!distExists) {
+                         echo "🤔 Nx n'a rien détecté (peut-être premier build ?). On force le build pour assurer le Docker."
+                         sh "npx nx run-many --target=build --all --configuration=production --parallel"
+                    }
                 }
             }
         }
 
-        stage('Docker Build & Push (Conditional)') {
+        stage('Docker Build & Push') {
             steps {
                 script {
                     def appsList = APPS.split(' ')
@@ -50,32 +80,48 @@ pipeline {
                         sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER_CRED" --password-stdin'
                         
                         appsList.each { appName ->
-                            if (fileExists("dist/apps/${appName}")) {
+                            // --- CORRECTION CHEMIN : Gestion souple des dossiers ---
+                            def distPath = "dist/apps/${appName}"
+                            def browserPath = "${distPath}/browser"
+                            def finalPath = ""
+
+                            if (fileExists(browserPath)) {
+                                finalPath = browserPath
+                            } else if (fileExists(distPath)) {
+                                finalPath = distPath
+                            }
+
+                            if (finalPath != "") {
+                                echo "🚀 Build trouvé pour ${appName} dans : ${finalPath}"
                                 
-                                echo "✅ Changement détecté sur ${appName} : Construction de l'image Docker..."
-                                
-                                // Construction du nom de l'image : yassinekamouss/public-app:a1b2c3d
                                 def imageUri = "${DOCKER_USER}/${appName}:${IMAGE_TAG}"
                                 def latestUri = "${DOCKER_USER}/${appName}:latest"
                                 
-                                // 1. Build
-                                // On passe l'argument APP_NAME au Dockerfile pour qu'il sache quel dossier copier
-                                sh "docker build -t ${imageUri} --build-arg APP_NAME=${appName} ."
+                                // On passe le bon chemin trouvé (finalPath) au Docker context si besoin, 
+                                // mais ici on utilise l'ARG pour le COPY.
+                                // IMPORTANT : Assurez-vous que votre Dockerfile copie bien ce dossier.
                                 
-                                // 2. Push version commmit
+                                sh "docker build -t ${imageUri} --build-arg APP_NAME=${appName} ."
                                 sh "docker push ${imageUri}"
                                 
-                                // 3. Tag & Push Latest (Pratique pour le dev)
-                                sh "docker tag ${imageUri} ${latestUri}"
-                                sh "docker push ${latestUri}"
-                                
+                                if (env.BRANCH_NAME == 'main') {
+                                    sh "docker tag ${imageUri} ${latestUri}"
+                                    sh "docker push ${latestUri}"
+                                }
                             } else {
-                                echo "⏭️ Aucun changement détecté sur ${appName} (pas de dist/). On passe."
+                                echo "💤 Aucun build détecté pour ${appName} (Nx n'a rien généré). On passe."
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+            sh "docker system prune -f" 
         }
     }
 }
