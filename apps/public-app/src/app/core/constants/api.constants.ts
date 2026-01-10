@@ -34,6 +34,10 @@ export const API_CONSTANTS = {
             BASE: '/api/rentalAgreement-microservice/rental-contracts',
             USER_ME: '/api/rentalAgreement-microservice/rental-contracts/user/me',
             KEY_DELIVERY: (id: number) => `/api/rentalAgreement-microservice/rental-contracts/${id}/key-delivery`
+        },
+        NOTIFICATIONS :{
+            BASE: '/api/notifications',
+            SOCKET: '/ws-notifications'
         }
     }
 };

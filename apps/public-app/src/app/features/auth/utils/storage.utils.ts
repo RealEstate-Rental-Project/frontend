@@ -32,4 +32,18 @@ export class StorageUtils {
         localStorage.removeItem(this.REFRESH_TOKEN_KEY);
         localStorage.removeItem(this.WALLET_ADDRESS_KEY);
     }
+
+    static getUserId(): number | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.id; // selon ce que ton backend met dans le token
+    } catch (e) {
+        console.error('Failed to parse JWT', e);
+        return null;
+    }
+}
+
 }
