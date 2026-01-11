@@ -67,6 +67,24 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube Analysis') {
+              steps {
+                  script {
+                      // Appel de ta fonction Shared Library
+                      runSonarAnalysis('estate-rental-frontend')
+                  }
+              }
+          }
+          
+        stage("Quality Gate") {
+            steps {
+                // Cette étape attend que le Webhook que tu as créé 
+                // renvoie le résultat (Success ou Failure)
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 
         stage('Docker Build & Push') {
             steps {
