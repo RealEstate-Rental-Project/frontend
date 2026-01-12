@@ -73,7 +73,7 @@ pipeline {
               steps {
                   script {
                       // Appel de ta fonction Shared Library
-                      runSonarAnalysis('estate-rental-frontend')
+                      runSonarAnalysis('estate-rental-frontend', 'cli')
                   }
               }
           }
