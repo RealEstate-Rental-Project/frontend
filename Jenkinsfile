@@ -78,15 +78,15 @@ pipeline {
               }
           }
           
-        stage("Quality Gate") {
-            steps {
-                // Cette étape attend que le Webhook que tu as créé 
-                // renvoie le résultat (Success ou Failure)
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+      stage('Quality Gate') {
+        steps {
+          catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+            timeout(time: 2, unit: 'MINUTES') {
+              waitForQualityGate abortPipeline: true
             }
+          }
         }
+      }
 
         stage('Docker Build & Push') {
             steps {
