@@ -39,7 +39,7 @@ function handle401Error(request: HttpRequest<unknown>, next: HttpHandlerFn, rout
 
         if (refreshToken) {
             // Construction de l'URL avec le paramètre de requête
-            const urlWithParams = `http://192.168.39.125:30080/api/auth/metamask/refresh?refreshToken=${encodeURIComponent(refreshToken)}`;
+            const urlWithParams = `http://192.168.39.85:30080/api/auth/metamask/refresh?refreshToken=${encodeURIComponent(refreshToken)}`;
 
             return from(fetch(urlWithParams, {
                 method: 'POST',
