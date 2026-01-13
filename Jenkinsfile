@@ -1,3 +1,5 @@
+@Library('jenkins-shared-library') _
+
 pipeline {
     agent any
 
@@ -67,6 +69,24 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube Analysis') {
+              steps {
+                  script {
+                      // Appel de ta fonction Shared Library
+                      runSonarAnalysis('estate-rental-frontend', 'cli')
+                  }
+              }
+          }
+          
+      stage('Quality Gate') {
+        steps {
+          catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+            timeout(time: 2, unit: 'MINUTES') {
+              waitForQualityGate abortPipeline: true
+            }
+          }
+        }
+      }
 
         stage('Docker Build & Push') {
             steps {

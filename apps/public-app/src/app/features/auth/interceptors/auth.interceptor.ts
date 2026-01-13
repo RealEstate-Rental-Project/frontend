@@ -39,6 +39,7 @@ function handle401Error(request: HttpRequest<unknown>, next: HttpHandlerFn, rout
         const refreshToken = StorageUtils.getRefreshToken();
 
         if (refreshToken) {
+
             // Construction de l'URL avec le paramètre de requête en utilisant API_CONSTANTS
             const urlWithParams = `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.AUTH.REFRESH}?refreshToken=${encodeURIComponent(refreshToken)}`;
 
