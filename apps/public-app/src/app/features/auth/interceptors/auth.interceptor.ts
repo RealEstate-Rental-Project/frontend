@@ -3,6 +3,7 @@ import { inject, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { throwError, from, switchMap, catchError, BehaviorSubject, filter, take } from 'rxjs';
 import { StorageUtils } from '../utils/storage.utils';
+import { API_CONSTANTS } from '../../../core/constants/api.constants';
 import { AuthService } from '../services/auth.service';
 
 let isRefreshing = false;
@@ -38,8 +39,8 @@ function handle401Error(request: HttpRequest<unknown>, next: HttpHandlerFn, rout
         const refreshToken = StorageUtils.getRefreshToken();
 
         if (refreshToken) {
-            // Construction de l'URL avec le paramètre de requête
-            const urlWithParams = `http://192.168.39.125:30080/api/auth/metamask/refresh?refreshToken=${encodeURIComponent(refreshToken)}`;
+            // Construction de l'URL avec le paramètre de requête en utilisant API_CONSTANTS
+            const urlWithParams = `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.AUTH.REFRESH}?refreshToken=${encodeURIComponent(refreshToken)}`;
 
             return from(fetch(urlWithParams, {
                 method: 'POST',
