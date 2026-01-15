@@ -136,9 +136,8 @@
           <p class="prediction-note">
             Our AI analyzed local trends and property specs to calculate this recommendation.
           </p>
-          <div class="comparison"
-            [class.overpriced]="property.predictedPrice.price_eth < property.predictedPrice.price_eth"
-            [class.underpriced]="property.predictedPrice.price_eth > property.predictedPrice.price_eth">
+          <div class="comparison" [class.overpriced]="property.predictedPrice.price_eth < 0"
+            [class.underpriced]="property.predictedPrice.price_eth > 0">
             <div class="comparison-bar">
               <div class="bar-fill" [style.width]="'100%'"></div>
             </div>
@@ -148,6 +147,44 @@
       </div>
     </div>
   </div>
+
+  <!-- AI Recommendations Tray -->
+  <section class="recommendations-tray container" *ngIf="recommendedProperties.length > 0">
+    <div class="tray-header">
+      <h2>Top Picks for You</h2>
+      <p>Personalized recommendations based on your preferences</p>
+    </div>
+
+    <div class="tray-grid">
+      <div *ngFor="let relProp of recommendedProperties" class="tray-card">
+        <div class="card-image">
+          <img [src]="getPropertyImage(relProp)" alt="{{ relProp.title }}"
+            [routerLink]="['/properties', relProp.idProperty]">
+          <div class="price-layer">
+            {{ relProp.rentAmount | currency:'USD':'symbol':'1.0-0' }}/mo
+          </div>
+          <!-- Neural Icon Badge -->
+          <div class="ai-neural-badge" *ngIf="relProp.predictedPrice">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v8" />
+              <path d="m4.93 10.93 1.41 1.41" />
+              <path d="M2 18h2" />
+              <path d="M20 18h2" />
+              <path d="m19.07 10.93-1.41 1.41" />
+              <path d="M22 22H2" />
+              <path d="m8 22 4-10 4 10" />
+            </svg>
+          </div>
+        </div>
+        <div class="card-info">
+          <h3>{{ relProp.title }}</h3>
+          <p>{{ relProp.city }}, {{ relProp.country }}</p>
+          <a [routerLink]="['/properties', relProp.idProperty]" class="link-view">View Details</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Reservation Request Modal -->
   <app-reservation-request *ngIf="showReservation" [property]="property" [isOwner]="isOwner"

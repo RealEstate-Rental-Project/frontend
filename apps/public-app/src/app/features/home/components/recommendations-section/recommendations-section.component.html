@@ -1,0 +1,66 @@
+<section class="recommendations-section container" *ngIf="loading || recommendedProperties.length > 0">
+    <div class="section-header">
+        <div>
+            <h2>Recommended for You</h2>
+            <p class="subtitle">Personalized picks based on your browsing history and preferences</p>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+        <div class="loader"></div>
+        <p>Analyzing your preferences...</p>
+    </div>
+
+    <div *ngIf="!loading" class="property-grid">
+        <div *ngFor="let property of recommendedProperties" class="property-card">
+            <div class="card-image">
+                <img [src]="getPropertyImage(property)" alt="{{ property.title }}"
+                    onerror="this.src='assets/placeholder.webp'">
+                <div class="badge" [class.available]="property.isAvailable">
+                    {{ property.isAvailable ? 'Available' : 'Rented' }}
+                </div>
+
+                <!-- AI Insight Banner -->
+                <div *ngIf="property.predictedPrice" class="ai-insight-integrated"
+                    [title]="'AI Market Analysis: ' + property.predictedPrice.price_eth + ' ETH'">
+                    <div class="ai-glow"></div>
+                    <svg class="ai-icon-neural" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M12 2v8"></path>
+                        <path d="m4.93 10.93 1.41 1.41"></path>
+                        <path d="M2 18h2"></path>
+                        <path d="M20 18h2"></path>
+                        <path d="m19.07 10.93-1.41 1.41"></path>
+                        <path d="M22 22H2"></path>
+                        <path d="m8 22 4-10 4 10"></path>
+                    </svg>
+                    <span class="ai-label">Smart Value</span>
+                    <span class="ai-price">{{ property.predictedPrice.price_eth | number:'1.4-4' }}
+                        <span>ETH</span></span>
+                </div>
+                <div class="price-tag">
+                    {{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <div class="type">{{ property.typeOfRental === 'MONTHLY' ? 'Long Term' : 'Short Term' }}</div>
+                <h3>{{ property.title }}</h3>
+                <p class="location">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    {{ property.city }}, {{ property.country }}
+                </p>
+
+                <div class="card-footer">
+                    <button class="btn-details" [routerLink]="['/properties', property.idProperty]">View
+                        Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -69,7 +69,6 @@ export class PaymentComponent implements OnInit {
     this.processing = true;
     try {
       this.toastService.show('Please confirm transaction in MetaMask...', 'info');
-
       // Convert MAD (frontend) to ETH (smart contract) using test ratio
       const totalMad = this.totalAmount;
       const totalEth = (totalMad / MAD_PER_ETH_TEST).toString();
