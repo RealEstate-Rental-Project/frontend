@@ -10,17 +10,19 @@ import { ActivatedRoute } from '@angular/router';
 import { PropertyService } from '../../core/services/property.service';
 import { Property } from '../../core/models/property.model';
 import { ReservationRequestComponent } from '../rentals/reservation-request/reservation-request.component';
+import { RouterModule } from '@angular/router';
 import { StorageUtils } from '../auth/utils/storage.utils';
 
 @Component({
   selector: 'app-property-details',
   standalone: true,
-  imports: [CommonModule, ReservationRequestComponent],
+  imports: [CommonModule, RouterModule, ReservationRequestComponent],
   templateUrl: './property-details.component.html',
   styleUrls: ['./property-details.component.scss'],
 })
 export class PropertyDetailsComponent implements OnInit, AfterViewInit {
   property: Property | null = null;
+  recommendedProperties: Property[] = [];
   private map: any;
   isOwner = false;
 
@@ -28,7 +30,7 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private propertyService: PropertyService,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -48,6 +50,10 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
             this.initMap();
           }, 100);
         }
+      });
+
+      this.propertyService.getRecommendations().subscribe(props => {
+        this.recommendedProperties = props.filter(p => p.idProperty.toString() !== id).slice(0, 4);
       });
     }
   }
@@ -137,5 +143,9 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
     } else {
       document.body.style.overflow = 'auto';
     }
+  }
+
+  getPropertyImage(property: Property): string {
+    return property.rooms?.[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp';
   }
 }

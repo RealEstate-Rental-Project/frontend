@@ -163,6 +163,21 @@ export class PropertyService {
         );
     }
 
+    getRecommendations(): Observable<Property[]> {
+        return this.http.get<Property[]>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.RECOMMENDATIONS}`
+        ).pipe(
+            switchMap(properties => {
+                if (!properties || properties.length === 0) return of([]);
+                return this.hydratePropertiesWithDetails(properties);
+            }),
+            catchError(error => {
+                console.error('Error fetching recommendations:', error);
+                return of([]);
+            })
+        );
+    }
+
     private hydratePropertiesWithDetails(properties: Property[]): Observable<Property[]> {
         if (!properties || properties.length === 0) {
             return of([]);

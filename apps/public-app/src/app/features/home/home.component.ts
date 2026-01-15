@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SearchComponent } from '../search/search.component';
 import { FeaturesSectionComponent } from './components/features-section/features-section.component';
 import { PopularDestinationsComponent } from './components/popular-destinations/popular-destinations.component';
 import { PlatformStatsComponent } from './components/platform-stats/platform-stats.component';
@@ -9,6 +8,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 import { PropertyService } from '../../core/services/property.service';
 import { Property } from '../../core/models/property.model';
 import { HeroComponent } from '../../shared/components/hero/hero.component';
+import { RecommendationsSectionComponent } from './components/recommendations-section/recommendations-section.component';
 
 @Component({
     selector: 'app-home',
@@ -20,7 +20,8 @@ import { HeroComponent } from '../../shared/components/hero/hero.component';
         PopularDestinationsComponent,
         PlatformStatsComponent,
         FooterComponent,
-        HeroComponent
+        HeroComponent,
+        RecommendationsSectionComponent
     ],
     templateUrl: './home.component.html',
     styleUrls: ['./home.component.scss']

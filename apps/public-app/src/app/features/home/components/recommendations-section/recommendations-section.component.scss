@@ -1,0 +1,241 @@
+.recommendations-section {
+    padding: 4rem 0;
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2.5rem;
+
+        h2 {
+            font-size: 2.2rem;
+            color: #1a1a2e;
+            margin: 0 0 0.5rem;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+    }
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    gap: 1.5rem;
+
+    .loader {
+        width: 48px;
+        height: 48px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #d4af37;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    p {
+        color: #666;
+        font-weight: 500;
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.property-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+// Reusing property-card styles from home
+.property-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+
+    &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+
+        .card-image img {
+            transform: scale(1.1);
+        }
+    }
+
+    .card-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+
+            &.available {
+                background: #28a745;
+            }
+        }
+
+        .ai-insight-integrated {
+            position: absolute;
+            top: 1rem;
+            right: -1px;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1rem;
+            border-radius: 12px 0 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-right: none;
+            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: help;
+
+            .ai-glow {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+                opacity: 0.5;
+                pointer-events: none;
+                animation: shimmer 2s infinite linear;
+            }
+
+            .ai-icon-neural {
+                color: #d4af37;
+            }
+
+            .ai-label {
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: rgba(255, 255, 255, 0.6);
+                font-weight: 600;
+            }
+
+            .ai-price {
+                font-size: 0.9rem;
+                font-weight: 800;
+                color: #d4af37;
+                display: flex;
+                align-items: baseline;
+                gap: 2px;
+            }
+        }
+
+        .price-tag {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            background: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            font-weight: 800;
+            color: #1a1a2e;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+            span {
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: #666;
+            }
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(200%);
+        }
+    }
+
+    .card-content {
+        padding: 1.5rem;
+
+        .type {
+            font-size: 0.75rem;
+            color: #d4af37;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        h3 {
+            margin: 0 0 0.8rem;
+            font-size: 1.25rem;
+            color: #1a1a2e;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-footer {
+            .btn-details {
+                width: 100%;
+                padding: 0.8rem;
+                background: #f8f9fa;
+                border: 1px solid #e0e0e0;
+                border-radius: 10px;
+                color: #1a1a2e;
+                font-weight: 600;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    background: #1a1a2e;
+                    color: white;
+                    border-color: #1a1a2e;
+                }
+            }
+        }
+    }
+}
