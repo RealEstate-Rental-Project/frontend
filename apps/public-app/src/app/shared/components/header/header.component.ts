@@ -39,6 +39,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   wallet: string | null = null;
   unreadCount = 0;
   isNotificationPanelOpen = false;
+  showOnboarding = false;
 
   notifications$: Observable<Notification[]>;
 
@@ -59,6 +60,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (isLoggedIn) {
           this.wallet = StorageUtils.getwallet();
           const userId = Number(StorageUtils.getUserId());
+
+          // Check if onboarding is needed
+          const hasSeenProfileGuide = localStorage.getItem('hasSeenProfileGuide');
+          if (!hasSeenProfileGuide) {
+            this.showOnboarding = true;
+          }
 
           // Connexion WebSocket et chargement des notifications
           this.notificationService.connect(userId);
@@ -98,6 +105,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   closeNotificationPanel(): void {
     this.isNotificationPanelOpen = false;
+  }
+
+  dismissOnboarding(): void {
+    this.showOnboarding = false;
+    localStorage.setItem('hasSeenProfileGuide', 'true');
   }
 
   onNotificationClick(notification: Notification): void {
