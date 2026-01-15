@@ -1,0 +1,247 @@
+<div class="tenant-profile-page">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading tenant profile...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <h2>{{ error }}</h2>
+    <button class="btn-back" (click)="goBack()">Go Back</button>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="!loading && !error && tenant" class="profile-container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <button class="btn-back" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back
+      </button>
+      <div class="header-content">
+        <h1>Tenant Profile</h1>
+        <p class="header-subtitle">Detailed tenant information and AI trust score analysis</p>
+      </div>
+    </div>
+
+    <!-- Profile Card -->
+    <div class="profile-card">
+
+      <!-- Tenant Header Section -->
+      <div class="tenant-header">
+        <div class="tenant-avatar">
+          <img [src]="avatarUrl" [alt]="tenant.firstName + ' ' + tenant.lastName" />
+          <div class="verified-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="tenant-info">
+          <h2 class="tenant-name">{{ tenant.firstName }} {{ tenant.lastName }}</h2>
+          <p class="tenant-username">@{{ tenant.username }}</p>
+          <span class="tenant-role" *ngIf="tenant.role">TENANT</span>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon trust-score">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Trust Score</span>
+            <span class="stat-value">{{ scorePercentage }}<span class="stat-unit">/100</span></span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon status">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 6v6l4 2"></path>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Status</span>
+            <span class="stat-value">{{ tenantScore?.risk_category || 'N/A' }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon verified">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Verification</span>
+            <span class="stat-value">Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Trust Score Section -->
+      <div class="score-section">
+        <div class="section-header">
+          <div class="section-title-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            <div>
+              <h3 class="section-title">AI Trust Score Analysis</h3>
+              <p class="section-subtitle">AI-powered tenant reliability assessment</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-content">
+          <!-- Circular Progress -->
+          <div class="score-visual">
+            <div class="circular-progress">
+              <svg class="progress-ring" width="220" height="220">
+                <circle class="progress-bg" cx="110" cy="110" r="95" stroke-width="12"></circle>
+                <circle class="progress-fill" cx="110" cy="110" r="95" stroke-width="12" [attr.stroke]="scoreColor"
+                  [style.stroke-dasharray]="596.9" [style.stroke-dashoffset]="596.9 - (596.9 * scorePercentage / 100)">
+                </circle>
+              </svg>
+              <div class="score-display">
+                <span class="score-number">{{ scorePercentage }}</span>
+                <span class="score-max">/100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Score Details -->
+          <div class="score-info">
+            <div class="score-item">
+              <label>Risk Category</label>
+              <span class="badge" [ngClass]="categoryBadgeClass">
+                {{ tenantScore?.risk_category }}
+              </span>
+            </div>
+
+            <div class="score-item">
+              <label>Recommendation</label>
+              <p class="recommendation">{{ tenantScore?.recommendation }}</p>
+            </div>
+
+            <div class="score-breakdown">
+              <h4>Score Breakdown</h4>
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>Reliability</span>
+                  <span class="breakdown-value">{{ scorePercentage }}%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" [style.width.%]="scorePercentage"></div>
+                </div>
+              </div>
+              <div class="breakdown-item">
+                <div class="breakdown-header">
+                  <span>Payment History</span>
+                  <span class="breakdown-value">{{ scorePercentage > 50 ? scorePercentage - 10 : scorePercentage
+                    }}%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill"
+                    [style.width.%]="scorePercentage > 50 ? scorePercentage - 10 : scorePercentage"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Information Section -->
+      <div class="contact-section">
+        <div class="section-header">
+          <div class="section-title-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <div>
+              <h3 class="section-title">Contact Information</h3>
+              <p class="section-subtitle">Tenant contact details and account information</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <label>Email Address</label>
+              <p>{{ tenant.email }}</p>
+            </div>
+          </div>
+
+          <div class="contact-item" *ngIf="tenant.wallet">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <label>Wallet Address</label>
+              <p class="wallet-address">{{ tenant.wallet.substring(0, 10) }}...{{
+                tenant.wallet.substring(tenant.wallet.length - 8) }}</p>
+            </div>
+          </div>
+
+          <div class="contact-item full-width" *ngIf="tenant.description">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <div class="contact-details">
+              <label>About</label>
+              <p>{{ tenant.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

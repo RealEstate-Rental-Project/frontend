@@ -30,14 +30,15 @@ export const API_CONSTANTS = {
             BASE: '/api/rentalAgreement-microservice/rental-requests',
             BY_TENANT: (tenantId: number) => `/api/rentalAgreement-microservice/rental-requests/tenant/${tenantId}`,
             BY_PROPERTY: (propertyId: number) => `/api/rentalAgreement-microservice/rental-requests/property/${propertyId}`,
-            UPDATE_STATUS: (requestId: number) => `/api/rentalAgreement-microservice/rental-requests/${requestId}/status`
+            UPDATE_STATUS: (requestId: number) => `/api/rentalAgreement-microservice/rental-requests/${requestId}/status`,
+            SCORE: (userId: number) => `/api/rentalAgreement-microservice/ai-models/consult-score/${userId}`
         },
         RENTAL_CONTRACTS: {
             BASE: '/api/rentalAgreement-microservice/rental-contracts',
             USER_ME: '/api/rentalAgreement-microservice/rental-contracts/user/me',
             KEY_DELIVERY: (id: number) => `/api/rentalAgreement-microservice/rental-contracts/${id}/key-delivery`
         },
-        NOTIFICATIONS :{
+        NOTIFICATIONS: {
             BASE: '/api/notifications',
             SOCKET: '/ws-notifications'
         }

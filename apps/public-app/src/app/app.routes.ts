@@ -18,6 +18,7 @@ export const appRoutes: Route[] = [
     { path: 'properties/:id', component: PropertyDetailsComponent },
     { path: 'about', component: AboutComponent },
     { path: 'profile', component: UserProfileComponent },
+    { path: 'tenant-profile/:id', loadComponent: () => import('./features/user/tenant-profile-view/tenant-profile-view.component').then(m => m.TenantProfileViewComponent) },
     { path: 'my-reservations', loadComponent: () => import('./features/rentals/my-reservations/my-reservations.component').then(m => m.MyReservationsComponent) },
     { path: 'rentals/payment/:id', loadComponent: () => import('./features/rentals/payment/payment.component').then(m => m.PaymentComponent) },
     { path: 'rentals/my-contracts', loadComponent: () => import('./features/rentals/my-contracts/my-contracts.component').then(m => m.MyContractsComponent) },

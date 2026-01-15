@@ -32,7 +32,8 @@ $header-height: 70px;
     }
 
     .highlight {
-      color: #d4af37; /* Gold */
+      color: #d4af37;
+      /* Gold */
     }
   }
 
@@ -121,7 +122,7 @@ $header-height: 70px;
       }
     }
   }
-} 
+}
 
 // --- STYLES DES NOTIFICATIONS (En dehors du header) ---
 
@@ -156,42 +157,49 @@ $header-height: 70px;
   // Positionnement précis en haut à droite
   top: 2px;
   right: 2px;
-  
+
   // Style visuel
   background-color: #ef4444; // Rouge vif professionnel
   color: white;
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
-  
+
   // Taille et Forme
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
   border-radius: 10px;
-  
+
   // Alignement du texte
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   // LE SECRET PROFESSIONNEL : La bordure blanche
-  border: 2px solid #ffffff; 
-  
+  border: 2px solid #ffffff;
+
   // Ombre portée subtile
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
+
   // Empêcher la déformation du bouton parent
-  pointer-events: none; 
-  
+  pointer-events: none;
+
   // Animation d'apparition
   animation: badgeScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   font-variant-numeric: tabular-nums; // Chiffres de largeur égale
 }
 
 @keyframes badgeScale {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 
@@ -209,8 +217,13 @@ $header-height: 70px;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 // Panel de notifications
@@ -252,8 +265,13 @@ $header-height: 70px;
       align-items: center;
       transition: background-color 0.2s ease;
 
-      &:hover { background-color: rgba(0, 0, 0, 0.05); }
-      svg { color: #6b7280; }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      svg {
+        color: #6b7280;
+      }
     }
   }
 
@@ -271,7 +289,11 @@ $header-height: 70px;
       color: #9ca3af;
       padding: 40px 20px;
       text-align: center;
-      svg { margin-bottom: 16px; opacity: 0.5; }
+
+      svg {
+        margin-bottom: 16px;
+        opacity: 0.5;
+      }
     }
 
     .notification-item {
@@ -283,17 +305,30 @@ $header-height: 70px;
       cursor: pointer;
       position: relative;
 
-      &:hover { background-color: #f9fafb; }
+      &:hover {
+        background-color: #f9fafb;
+      }
 
       &.unread {
         background-color: #eff6ff;
         border-left: 3px solid #3b82f6;
-        .notification-title { font-weight: 600; }
+
+        .notification-title {
+          font-weight: 600;
+        }
       }
 
       &.read {
         opacity: 0.7;
-        .notification-content { color: #6b7280; }
+
+        .notification-content {
+          color: #6b7280;
+        }
+      }
+
+      &.clickable:hover {
+        background-color: #f3f4f6;
+        transform: translateX(-4px);
       }
 
       .notification-icon {
@@ -306,13 +341,40 @@ $header-height: 70px;
         flex-shrink: 0;
         margin-right: 12px;
 
-        &.icon-info { background-color: #dbeafe; color: #3b82f6; }
-        &.icon-success { background-color: #d1fae5; color: #10b981; }
-        &.icon-error { background-color: #fee2e2; color: #ef4444; }
-        &.icon-payment { background-color: #fef3c7; color: #f59e0b; }
-        &.icon-contract { background-color: #e9d5ff; color: #a855f7; }
-        &.icon-key { background-color: #fce7f3; color: #ec4899; }
-        &.icon-default { background-color: #f3f4f6; color: #6b7280; }
+        &.icon-info {
+          background-color: #dbeafe;
+          color: #3b82f6;
+        }
+
+        &.icon-success {
+          background-color: #d1fae5;
+          color: #10b981;
+        }
+
+        &.icon-error {
+          background-color: #fee2e2;
+          color: #ef4444;
+        }
+
+        &.icon-payment {
+          background-color: #fef3c7;
+          color: #f59e0b;
+        }
+
+        &.icon-contract {
+          background-color: #e9d5ff;
+          color: #a855f7;
+        }
+
+        &.icon-key {
+          background-color: #fce7f3;
+          color: #ec4899;
+        }
+
+        &.icon-default {
+          background-color: #f3f4f6;
+          color: #6b7280;
+        }
       }
 
       .notification-content {
@@ -355,41 +417,69 @@ $header-height: 70px;
         opacity: 0;
         transition: all 0.2s ease;
 
-        &:hover { background-color: #2563eb; transform: scale(1.05); }
+        &:hover {
+          background-color: #2563eb;
+          transform: scale(1.05);
+        }
       }
 
-      &:hover .mark-read-btn { opacity: 1; }
+      &:hover .mark-read-btn {
+        opacity: 1;
+      }
     }
   }
 
   // Scrollbar
-  .notification-list::-webkit-scrollbar { width: 6px; }
-  .notification-list::-webkit-scrollbar-track { background: #f3f4f6; }
+  .notification-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .notification-list::-webkit-scrollbar-track {
+    background: #f3f4f6;
+  }
+
   .notification-list::-webkit-scrollbar-thumb {
     background: #d1d5db;
     border-radius: 3px;
-    &:hover { background: #9ca3af; }
+
+    &:hover {
+      background: #9ca3af;
+    }
   }
 }
 
 // Responsive
 @media (max-width: 1024px) {
-  .notification-panel { width: $notification-panel-width-tablet; }
+  .notification-panel {
+    width: $notification-panel-width-tablet;
+  }
 }
 
 @media (max-width: 768px) {
   .notification-panel {
     width: $notification-panel-width-mobile;
-    .notification-item .mark-read-btn { opacity: 1; }
+
+    .notification-item .mark-read-btn {
+      opacity: 1;
+    }
   }
 }
 
 // Animation des items
 @media (prefers-reduced-motion: no-preference) {
-  .notification-item { animation: slideInItem 0.3s ease-out; }
+  .notification-item {
+    animation: slideInItem 0.3s ease-out;
+  }
 }
 
 @keyframes slideInItem {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

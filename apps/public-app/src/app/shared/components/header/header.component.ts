@@ -39,9 +39,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   wallet: string | null = null;
   unreadCount = 0;
   isNotificationPanelOpen = false;
-  
+
   notifications$: Observable<Notification[]>;
-  
+
   private subscriptions = new Subscription();
 
   constructor(
@@ -59,12 +59,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         if (isLoggedIn) {
           this.wallet = StorageUtils.getwallet();
           const userId = Number(StorageUtils.getUserId());
-          
+
           // Connexion WebSocket et chargement des notifications
           this.notificationService.connect(userId);
           this.notificationService.loadNotifications(userId);
           this.notificationService.getUnreadCount(userId);
-          
+
           // Écoute du compteur de notifications non lues
           this.subscriptions.add(
             this.notificationService.unreadCount$.subscribe(count => {
@@ -88,7 +88,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   toggleNotificationPanel(event: Event): void {
     event.stopPropagation();
     this.isNotificationPanelOpen = !this.isNotificationPanelOpen;
-    
+
     // Charger les notifications si le panel s'ouvre
     if (this.isNotificationPanelOpen && this.isLoggedIn) {
       const userId = Number(StorageUtils.getUserId());
@@ -98,6 +98,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   closeNotificationPanel(): void {
     this.isNotificationPanelOpen = false;
+  }
+
+  onNotificationClick(notification: Notification): void {
+    // Mark notification as read
+    this.markAsRead(notification.id);
+
+    // Navigate based on event type and metadata
+    if (notification.eventType === EventType.RENTAL_REQUEST_CREATED && notification.metadata?.tenantId) {
+      this.router.navigate(['/tenant-profile', notification.metadata.tenantId]);
+      this.closeNotificationPanel();
+    }
+    // Future: Add other navigation logic for different event types
+    // e.g., if (notification.eventType === EventType.PAYMENT_RECEIVED && notification.metadata?.propertyId)
   }
 
   markAsRead(notificationId: number): void {
@@ -123,7 +136,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
     if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
     if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    
+
     return sent.toLocaleDateString();
   }
 

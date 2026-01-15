@@ -38,6 +38,21 @@ export class UserService {
         }
     }
 
+    async getUserById(userId: number): Promise<User> {
+        try {
+            const token = StorageUtils.getAccessToken();
+            const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+            return await lastValueFrom(this.http.get<User>(
+                `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}/id/${userId}`,
+                { headers }
+            ));
+        } catch (error) {
+            console.error('Failed to fetch user by ID:', error);
+            throw error;
+        }
+    }
+
     async updateUser(user: User): Promise<User> {
         const token = StorageUtils.getAccessToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
@@ -52,7 +67,7 @@ export class UserService {
         }
 
         return await lastValueFrom(this.http.patch<User>(
-            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}/${user.id}`,
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}/id/${user.id}`,
             user,
             { headers }
         ));

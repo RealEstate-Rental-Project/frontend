@@ -15,22 +15,20 @@
             <ng-container *ngIf="isLoggedIn; else guestTemplate">
                 <div class="user-profile">
                     <!-- Bouton de notification modifié -->
-                    <button 
-                        class="icon-btn notification-btn" 
-                        (click)="toggleNotificationPanel($event)"
+                    <button class="icon-btn notification-btn" (click)="toggleNotificationPanel($event)"
                         aria-label="Notifications">
-                                    <!-- L'icône reste fixe -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                    </svg>
+                        <!-- L'icône reste fixe -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
 
-                    <!-- Le badge "flotte" par dessus sans déplacer l'icône -->
-                    <span *ngIf="unreadCount > 0" class="notification-badge">
-                        {{ unreadCount > 99 ? '99+' : unreadCount }}
-                    </span>
-                </button>                    
+                        <!-- Le badge "flotte" par dessus sans déplacer l'icône -->
+                        <span *ngIf="unreadCount > 0" class="notification-badge">
+                            {{ unreadCount > 99 ? '99+' : unreadCount }}
+                        </span>
+                    </button>
                     <div class="avatar" [title]="wallet" routerLink="/profile" style="cursor: pointer;">
                         <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar">
                     </div>
@@ -49,25 +47,17 @@
 </header>
 
 <!-- Overlay pour fermer le panel en cliquant en dehors -->
-<div 
-    class="notification-overlay" 
-    *ngIf="isNotificationPanelOpen"
-    (click)="closeNotificationPanel()">
+<div class="notification-overlay" *ngIf="isNotificationPanelOpen" (click)="closeNotificationPanel()">
 </div>
 
 <!-- Panel de notifications -->
-<div 
-    class="notification-panel" 
-    [class.open]="isNotificationPanelOpen"
+<div class="notification-panel" [class.open]="isNotificationPanelOpen"
     [@slideIn]="isNotificationPanelOpen ? 'open' : 'closed'">
-    
+
     <!-- Header du panel -->
     <div class="notification-header">
         <h3>Notifications</h3>
-        <button 
-            class="close-btn" 
-            (click)="closeNotificationPanel()"
-            aria-label="Close notifications">
+        <button class="close-btn" (click)="closeNotificationPanel()" aria-label="Close notifications">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -88,12 +78,11 @@
                 <p>No notifications yet</p>
             </div>
 
-            <div 
-                *ngFor="let notification of notifications" 
-                class="notification-item"
-                [class.read]="notification.status === 'READ'"
-                [class.unread]="notification.status !== 'READ'">
-                
+            <div *ngFor="let notification of notifications" class="notification-item"
+                [class.read]="notification.status === 'READ'" [class.unread]="notification.status !== 'READ'"
+                [class.clickable]="notification.eventType === 'RENTAL_REQUEST_CREATED' && notification.metadata?.tenantId"
+                (click)="onNotificationClick(notification)" style="cursor: pointer;">
+
                 <div class="notification-icon" [ngClass]="getNotificationIconClass(notification.eventType)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -107,11 +96,8 @@
                     <span class="notification-time">{{ formatTime(notification.sentAt) }}</span>
                 </div>
 
-                <button 
-                    *ngIf="notification.status !== 'READ'"
-                    class="mark-read-btn"
-                    (click)="markAsRead(notification.id)"
-                    aria-label="Mark as read">
+                <button *ngIf="notification.status !== 'READ'" class="mark-read-btn"
+                    (click)="markAsRead(notification.id); $event.stopPropagation()" aria-label="Mark as read">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="20 6 9 17 4 12"></polyline>

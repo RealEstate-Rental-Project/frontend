@@ -19,7 +19,7 @@ export class NotificationService {
   private unreadCountSubject = new BehaviorSubject<number>(0);
   unreadCount$ = this.unreadCountSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /* =========================
      WEBSOCKET
@@ -33,7 +33,7 @@ export class NotificationService {
           `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.NOTIFICATIONS.SOCKET}`
         ),
 
-      debug: () => {},
+      debug: () => { },
 
       onConnect: () => {
         this.stompClient?.subscribe(
@@ -77,6 +77,12 @@ export class NotificationService {
     this.http.get<number>(
       `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.NOTIFICATIONS.BASE}/unread/count/${userId}`
     ).subscribe(count => this.unreadCountSubject.next(count));
+  }
+
+  getTenantScore(userId: number) {
+    return this.http.get(
+      `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.RENTAL_AGREEMENT.SCORE(userId)}`
+    );
   }
 
   markAsRead(notificationId: number): void {
