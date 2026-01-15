@@ -102,33 +102,81 @@
             }
         }
 
-        .ai-badge {
+        .ai-insight-integrated {
             position: absolute;
             top: 1rem;
-            right: 1rem;
-            background: rgba(26, 26, 46, 0.9);
-            backdrop-filter: blur(4px);
-            color: #d4af37;
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.7rem;
+            right: -1px; // Align to edge
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 1rem;
+            border-radius: 12px 0 0 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
-            z-index: 2;
+            gap: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-right: none;
+            box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: help;
 
-            svg {
-                color: #d4af37;
+            &:hover {
+                transform: translateX(-5px);
+                background: rgba(26, 26, 46, 1);
+                border-color: #d4af37;
+
+                .ai-glow {
+                    opacity: 1;
+                }
             }
 
-            span {
-                font-weight: 500;
+            .ai-glow {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+                opacity: 0.5;
+                pointer-events: none;
+                animation: shimmer 2s infinite linear;
+            }
 
-                b {
-                    font-weight: 700;
+            .ai-icon-neural {
+                color: #d4af37;
+                filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+            }
+
+            .ai-label {
+                font-size: 0.65rem;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: rgba(255, 255, 255, 0.6);
+                font-weight: 600;
+            }
+
+            .ai-price {
+                font-size: 0.9rem;
+                font-weight: 800;
+                color: #d4af37;
+                display: flex;
+                align-items: baseline;
+                gap: 2px;
+
+                span {
+                    font-size: 0.6rem;
+                    opacity: 0.8;
                 }
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(200%);
             }
         }
 
