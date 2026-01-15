@@ -22,5 +22,6 @@ export const appRoutes: Route[] = [
     { path: 'my-reservations', loadComponent: () => import('./features/rentals/my-reservations/my-reservations.component').then(m => m.MyReservationsComponent) },
     { path: 'rentals/payment/:id', loadComponent: () => import('./features/rentals/payment/payment.component').then(m => m.PaymentComponent) },
     { path: 'rentals/my-contracts', loadComponent: () => import('./features/rentals/my-contracts/my-contracts.component').then(m => m.MyContractsComponent) },
+    { path: 'market-insights', loadComponent: () => import('./features/market-insights/market-insights.component').then(m => m.MarketInsightsComponent) },
     { path: '', component: HomeComponent },
 ];

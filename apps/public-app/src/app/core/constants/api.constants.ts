@@ -17,6 +17,7 @@ export const API_CONSTANTS = {
             SEARCH: '/api/property-microservice/properties/search',
             FEATURED: '/api/property-microservice/properties/featured',
             MY_PROPERTIES: '/api/property-microservice/properties/my-properties',
+            HEATMAP: '/api/property-microservice/properties/heatmap',
             BY_ID: (id: number) => `/api/property-microservice/properties/${id}`
         },
         ROOMS: {

@@ -1,0 +1,479 @@
+.market-insights-page {
+    min-height: 100vh;
+    background: #fdfdfd; // Very light gray/white background
+    font-family: 'Inter', sans-serif;
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    height: 450px;
+    display: flex;
+    align-items: center;
+    background-image: url('https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?q=80&w=2000');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin-top: -80px; // Counteract padding-top of page (matches home hero)
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+        z-index: 5;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(26, 26, 46, 0.85) 0%, rgba(22, 33, 62, 0.75) 100%);
+        z-index: 1;
+    }
+
+    .hero-container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+    }
+
+    .hero-content {
+        max-width: 800px;
+    }
+
+    h1 {
+        font-size: 4rem; // Refined large size
+        font-weight: 800;
+        margin: 0 0 1rem;
+        letter-spacing: -0.02em;
+        color: white;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+        span {
+            color: #d4af37; // Gold highlighting
+        }
+    }
+
+    .subtitle {
+        font-size: 1.4rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+        font-weight: 400;
+        max-width: 600px;
+        line-height: 1.5;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Main Content Area */
+.main-content {
+    margin-top: -40px;
+    padding-bottom: 80px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Controls Bar */
+.controls-bar {
+    background: white;
+    padding: 24px 32px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+
+    .controls-left {
+        h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0 0 4px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+    }
+}
+
+/* Rental Type Toggle */
+.rental-type-toggle {
+    display: flex;
+    background: #f1f3f5;
+    padding: 6px;
+    border-radius: 12px;
+    gap: 4px;
+
+    .toggle-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: none;
+        background: transparent;
+        color: #666;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+        svg {
+            transition: transform 0.2s ease;
+        }
+
+        &:hover {
+            color: #1a1a2e;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        &.active {
+            background: white;
+            color: #d4af37;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+            svg {
+                transform: scale(1.1);
+            }
+        }
+    }
+}
+
+/* Map Card */
+.map-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 650px;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    &.hidden {
+        visibility: hidden;
+    }
+}
+
+/* States */
+.loading-state,
+.error-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    z-index: 20;
+    text-align: center;
+    padding: 40px;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f1f3f5;
+    border-top: 5px solid #d4af37;
+    border-radius: 50%;
+    animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    margin-bottom: 24px;
+}
+
+.error-state {
+    svg {
+        color: #ff4d4d;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 24px;
+        color: #1a1a2e;
+        margin-bottom: 12px;
+    }
+
+    p {
+        color: #666;
+        max-width: 400px;
+        margin-bottom: 30px;
+    }
+
+    .btn-retry {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 28px;
+        background: #d4af37;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: #b8952d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+    }
+}
+
+/* Legend Overlay */
+.legend {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin: 0 0 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .legend-items {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .legend-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+
+        &.hot {
+            background: #ef4444;
+        }
+
+        &.stable {
+            background: #3b82f6;
+        }
+
+        &.cool {
+            background: #22c55e;
+        }
+
+        svg {
+            width: 14px;
+            height: 14px;
+        }
+    }
+
+    .legend-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+
+    .legend-note {
+        font-size: 11px;
+        color: #888;
+        margin: 12px 0 0;
+        padding-top: 12px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+    }
+}
+
+/* Info Cards Section */
+.info-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.info-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    &:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
+        border-color: rgba(212, 175, 55, 0.2);
+
+        .icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+        }
+    }
+
+    .icon-wrapper {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        transition: transform 0.3s ease;
+
+        &.hot {
+            background: linear-gradient(135deg, #fff5f5, #feb2b2);
+            color: #ef4444;
+        }
+
+        &.stable {
+            background: linear-gradient(135deg, #f0f7ff, #bee3f8);
+            color: #3b82f6;
+        }
+
+        &.cool {
+            background: linear-gradient(135deg, #f0fff4, #9ae6b4);
+            color: #22c55e;
+        }
+    }
+
+    h3 {
+        font-size: 20px;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 12px;
+    }
+
+    p {
+        font-size: 15px;
+        color: #666;
+        line-height: 1.6;
+        margin: 0;
+    }
+}
+
+/* Utility */
+.container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Map Popup Overrides - Critical for professional look */
+:host ::ng-deep {
+    .leaflet-popup-content-wrapper {
+        border-radius: 16px;
+        padding: 8px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .leaflet-popup-tip {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .leaflet-container {
+        font-family: 'Inter', sans-serif !important;
+    }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .info-cards {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+
+        h1 {
+            font-size: 36px;
+        }
+    }
+
+    .controls-bar {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .map-card {
+        height: 500px;
+    }
+
+    .legend {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        width: auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 12px;
+
+        h3 {
+            display: none;
+        }
+
+        .legend-items {
+            flex-direction: row;
+            margin: 0;
+            gap: 15px;
+        }
+
+        .legend-note {
+            display: none;
+        }
+    }
+}
