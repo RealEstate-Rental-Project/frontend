@@ -20,6 +20,8 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 
@@ -31,37 +33,119 @@
     .section-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
+        align-items: flex-end;
+        margin-bottom: 2.5rem;
+        padding: 0; // Ensure it aligns with the grid start
 
         h2 {
-            font-size: 2rem;
-            color: #333;
+            font-size: 2.4rem;
+            color: #1a1a1a;
             margin-bottom: 0.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
             color: #666;
             margin: 0;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
 
-        .view-all {
-            color: #d4af37;
-            text-decoration: none;
-            font-weight: 600;
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
 
-            &:hover {
-                text-decoration: underline;
+            .carousel-nav {
+                display: flex;
+                gap: 0.75rem;
+
+                .nav-btn {
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    border: 1px solid #e0e0e0;
+                    background: white;
+                    color: #333;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+                    &:hover {
+                        background: #d4af37;
+                        border-color: #d4af37;
+                        color: white;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+                    }
+
+                    &:active {
+                        transform: translateY(0);
+                    }
+
+                    svg {
+                        stroke-width: 2.5px;
+                    }
+                }
+            }
+
+            .view-all {
+                color: #d4af37;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: color 0.3s;
+
+                &:hover {
+                    color: #b8962d;
+                    text-decoration: none;
+
+                    &::after {
+                        transform: translateX(3px);
+                    }
+                }
+
+                &::after {
+                    content: '→';
+                    transition: transform 0.3s;
+                }
             }
         }
     }
 }
 
+.carousel-container {
+    position: relative;
+    overflow: visible; // Allow shadows to be visible
+    margin: 0; // Reset margin to align with container
+    padding: 0;
+}
+
 .property-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    display: flex;
     gap: 2rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    padding: 1.5rem 0; // Space for card shadows
+    scrollbar-width: none;
+    margin: 0;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .property-card {
+        flex: 0 0 calc((100% - 4rem) / 3); // Precisely 3 cards with 2 gaps
+        scroll-snap-align: start;
+        margin-bottom: 0.5rem;
+    }
 }
 
 .property-card {
@@ -297,19 +381,5 @@
                 }
             }
         }
-    }
-}
-
-@media (max-width: 768px) {
-    .hero {
-        height: 500px;
-
-        .hero-content h1 {
-            font-size: 2.5rem;
-        }
-    }
-
-    .cta-section .container {
-        grid-template-columns: 1fr;
     }
 }

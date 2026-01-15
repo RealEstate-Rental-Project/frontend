@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PropertyService } from '../../../../core/services/property.service';
@@ -15,6 +15,7 @@ import { Observable, of } from 'rxjs';
 })
 export class RecommendationsSectionComponent implements OnInit {
     recommendedProperties: Property[] = [];
+    @ViewChild('recommendedGrid') recommendedGrid!: ElementRef;
     isLoggedIn = false;
     loading = true;
 
@@ -46,6 +47,16 @@ export class RecommendationsSectionComponent implements OnInit {
                 console.error('RecommendationsSectionComponent: Error:', err);
                 this.loading = false;
             }
+        });
+    }
+
+    scrollRecommended(direction: 'prev' | 'next'): void {
+        if (!this.recommendedGrid) return;
+        const container = this.recommendedGrid.nativeElement;
+        const scrollAmount = container.offsetWidth + 32; // Container width + gap
+        container.scrollBy({
+            left: direction === 'next' ? scrollAmount : -scrollAmount,
+            behavior: 'smooth'
         });
     }
 

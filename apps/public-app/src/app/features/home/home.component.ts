@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FeaturesSectionComponent } from './components/features-section/features-section.component';
@@ -28,6 +28,7 @@ import { RecommendationsSectionComponent } from './components/recommendations-se
 })
 export class HomeComponent implements OnInit {
     featuredProperties: Property[] = [];
+    @ViewChild('featuredGrid') featuredGrid!: ElementRef;
     showMap = false;
     private map: any;
     private markers: any[] = [];
@@ -43,6 +44,16 @@ export class HomeComponent implements OnInit {
             if (this.showMap) {
                 this.updateMapMarkers();
             }
+        });
+    }
+
+    scrollFeatured(direction: 'prev' | 'next'): void {
+        if (!this.featuredGrid) return;
+        const container = this.featuredGrid.nativeElement;
+        const scrollAmount = container.offsetWidth + 32; // Container width + gap (2rem = 32px)
+        container.scrollBy({
+            left: direction === 'next' ? scrollAmount : -scrollAmount,
+            behavior: 'smooth'
         });
     }
 
