@@ -6,6 +6,7 @@ import { PropertyCreationRequest, TypeOfRental, RoomCreationRequest, Property, P
 import { PropertyService } from '../../../core/services/property.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { BlockchainService } from '../../../core/services/blockchain.service';
+import { MAD_PER_ETH_TEST } from '../../../core/constants/api.constants';
 
 @Component({
     selector: 'app-create-property',
@@ -251,12 +252,16 @@ export class CreatePropertyComponent implements OnInit {
             try {
                 this.toastService.show('Please confirm the transaction in MetaMask...', 'info');
 
+                // Convert MAD (frontend) to ETH (smart contract) using test ratio
+                const rentEth = (this.property.rentAmount / MAD_PER_ETH_TEST).toString();
+                const depositEth = (this.property.securityDeposit / MAD_PER_ETH_TEST).toString();
+
                 // 1. Blockchain Call
                 const result = await this.blockchainService.listProperty(
                     this.property.address,
                     this.property.description,
-                    this.property.rentAmount.toString(),
-                    this.property.securityDeposit.toString(),
+                    rentEth,
+                    depositEth,
                     this.property.typeOfRental === TypeOfRental.DAILY ? 1 : 0
                 );
 

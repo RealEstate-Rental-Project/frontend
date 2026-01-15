@@ -25,13 +25,61 @@ export class BlockchainService {
         if (!accounts || accounts.length === 0) {
             throw new Error('No accounts found');
         }
+
+        // Ensure we are on Sepolia network
+        await this.switchToSepolia();
+
         return accounts[0];
+    }
+
+    async switchToSepolia(): Promise<void> {
+        if (!this.provider) {
+            throw new Error('MetaMask is not installed!');
+        }
+
+        const sepoliaChainId = '0xaa36a7'; // 11155111
+
+        try {
+            const currentChainId = await this.provider.send('eth_chainId', []);
+            if (currentChainId === sepoliaChainId) {
+                return;
+            }
+
+            await this.provider.send('wallet_switchEthereumChain', [{ chainId: sepoliaChainId }]);
+        } catch (switchError: any) {
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (switchError.code === 4902) {
+                try {
+                    await this.provider.send('wallet_addEthereumChain', [
+                        {
+                            chainId: sepoliaChainId,
+                            chainName: 'Sepolia Test Network',
+                            rpcUrls: ['https://eth-sepolia.g.alchemy.com/v2/e76jDSxSy41zDtqIKDOhm'],
+                            nativeCurrency: {
+                                name: 'SepoliaETH',
+                                symbol: 'SepoliaETH',
+                                decimals: 18,
+                            },
+                            blockExplorerUrls: ['https://sepolia.etherscan.io'],
+                        },
+                    ]);
+                } catch (addError) {
+                    throw new Error('Failed to add Sepolia network to MetaMask');
+                }
+            } else {
+                throw new Error('Failed to switch to Sepolia network');
+            }
+        }
     }
 
     async getContract(): Promise<Contract> {
         if (!this.provider) {
             throw new Error('MetaMask is not installed!');
         }
+
+        // Ensure we are on Sepolia network before interacting with contract
+        await this.switchToSepolia();
+
         const signer = await this.provider.getSigner();
         if (!this.contract) {
             this.contract = new Contract(this.contractAddress, RealEstateRental.abi, signer);

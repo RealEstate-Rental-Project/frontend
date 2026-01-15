@@ -6,6 +6,7 @@ import { RentalService } from '../../../core/services/rental.service';
 import { BlockchainService } from '../../../core/services/blockchain.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { RentalRequest } from '../../../core/models/rental.model';
+import { MAD_PER_ETH_TEST } from '../../../core/constants/api.constants';
 import { parseEther } from 'ethers';
 import { switchMap } from 'rxjs/operators';
 
@@ -69,7 +70,9 @@ export class PaymentComponent implements OnInit {
     try {
       this.toastService.show('Please confirm transaction in MetaMask...', 'info');
 
-      const totalEth = this.totalAmount.toString();
+      // Convert MAD (frontend) to ETH (smart contract) using test ratio
+      const totalMad = this.totalAmount;
+      const totalEth = (totalMad / MAD_PER_ETH_TEST).toString();
       const totalWei = parseEther(totalEth).toString();
 
       // 1. Blockchain Transaction

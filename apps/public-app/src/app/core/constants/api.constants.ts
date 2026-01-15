@@ -1,5 +1,11 @@
 import { environment } from '../../../environments/environment';
 
+// Test conversion rate between Moroccan Dirham (MAD) and ETH.
+// This is intentionally very high so that realistic MAD prices
+// correspond to very small ETH amounts when testing with limited
+// Sepolia ETH balances.
+export const MAD_PER_ETH_TEST = 2_000_000; // 1 ETH = 2,000,000 MAD (test only)
+
 export const API_CONSTANTS = {
     GATEWAY_URL: environment.gatewayUrl,
     ENDPOINTS: {
