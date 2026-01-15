@@ -252,13 +252,18 @@ export class CreatePropertyComponent implements OnInit {
                 this.toastService.show('Please confirm the transaction in MetaMask...', 'info');
 
                 // 1. Blockchain Call
+                // FOR TESTING: Divide by 10,000,000 to make the amount negligible
+                const testRent = (this.property.rentAmount / 10000000).toFixed(18);
+                const testDeposit = (this.property.securityDeposit / 10000000).toFixed(18);
+
                 const result = await this.blockchainService.listProperty(
                     this.property.address,
                     this.property.description,
-                    this.property.rentAmount.toString(),
-                    this.property.securityDeposit.toString(),
+                    testRent,
+                    testDeposit,
                     this.property.typeOfRental === TypeOfRental.DAILY ? 1 : 0
                 );
+                console.log(`[TEST MODE] Listing Property - Original: ${this.property.rentAmount}/${this.property.securityDeposit}, Divided: ${testRent}/${testDeposit}`);
 
                 console.log('Blockchain transaction successful:', result);
                 this.toastService.show('Transaction confirmed! Saving to database...', 'success');

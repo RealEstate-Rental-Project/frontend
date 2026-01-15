@@ -69,8 +69,10 @@ export class PaymentComponent implements OnInit {
     try {
       this.toastService.show('Please confirm transaction in MetaMask...', 'info');
 
-      const totalEth = this.totalAmount.toString();
-      const totalWei = parseEther(totalEth).toString();
+      // FOR TESTING: Divide by 10,000,000 to make the amount negligible
+      const testTotalEth = (this.totalAmount / 10000000).toFixed(18);
+      const totalWei = parseEther(testTotalEth).toString();
+      console.log(`[TEST MODE] Original ETH: ${this.totalAmount}, Divided ETH: ${testTotalEth}, Wei: ${totalWei}`);
 
       // 1. Blockchain Transaction
       const result = await this.blockchainService.reserveProperty(
