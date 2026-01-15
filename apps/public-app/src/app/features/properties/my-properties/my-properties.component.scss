@@ -115,11 +115,42 @@
         margin: 0 0 0.5rem;
     }
 
+    .price-container {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
     .price {
         color: #333;
-        font-weight: 500;
-        font-size: 0.95rem;
+        font-weight: 600;
+        font-size: 1rem;
         margin: 0;
+    }
+
+    .ai-suggestion {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        color: #b5952f;
+
+        svg {
+            color: #d4af37;
+        }
+
+        span {
+            font-weight: 500;
+
+            b {
+                font-weight: 700;
+            }
+        }
     }
 }
 

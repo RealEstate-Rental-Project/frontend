@@ -4,10 +4,10 @@ export enum TypeOfRental {
 }
 
 export enum PropertyType {
-    APARTMENT="APARTMENT",
-    HOUSE="HOUSE",
-    VILLA="VILLA",
-    STUDIO="STUDIO"
+    APARTMENT = "APARTMENT",
+    HOUSE = "HOUSE",
+    VILLA = "VILLA",
+    STUDIO = "STUDIO"
 }
 
 export interface RoomCreationRequest {
@@ -74,4 +74,11 @@ export interface Property {
     rating: number;
     nombreEtoiles: number;
     rooms: Room[];
+    predictedPrice?: PricePredictionResponseDTO;
+}
+
+export interface PricePredictionResponseDTO {
+    type: 'MONTHLY' | 'DAILY';
+    price_wei: number;
+    price_eth: number;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin, throwError } from 'rxjs';
 import { switchMap, map, catchError, delay, tap } from 'rxjs/operators';
-import { Property, PropertyCreationRequest, Room } from '../models/property.model';
+import { Property, PropertyCreationRequest, Room, PricePredictionResponseDTO } from '../models/property.model';
 import { API_CONSTANTS } from '../constants/api.constants';
 import { MOCK_PROPERTIES } from '../../shared/data/mock-properties';
 import { SearchCriteria } from './search.service';
@@ -152,6 +152,17 @@ export class PropertyService {
         );
     }
 
+    getPricePrediction(id: number): Observable<PricePredictionResponseDTO> {
+        return this.http.get<PricePredictionResponseDTO>(
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.PROPERTIES.PREDICT_PRICE(id)}`
+        ).pipe(
+            catchError(err => {
+                console.error(`Error predicting price for property ${id}:`, err);
+                return throwError(() => err);
+            })
+        );
+    }
+
     private hydratePropertiesWithDetails(properties: Property[]): Observable<Property[]> {
         if (!properties || properties.length === 0) {
             return of([]);
@@ -179,6 +190,13 @@ export class PropertyService {
 
                     return forkJoin(roomObservables).pipe(
                         map(roomsWithImages => ({ ...property, rooms: roomsWithImages }))
+                    );
+                }),
+                switchMap(propertyWithRooms => {
+                    // Fetch AI Price Prediction
+                    return this.getPricePrediction(propertyWithRooms.idProperty).pipe(
+                        map(prediction => ({ ...propertyWithRooms, predictedPrice: prediction })),
+                        catchError(() => of(propertyWithRooms)) // Fail gracefully if prediction fails
                     );
                 }),
                 catchError(() => of({ ...property, rooms: [] })) // Handle error if rooms fail

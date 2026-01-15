@@ -27,6 +27,22 @@
                         <div class="badge" [class.available]="property.isAvailable">
                             {{ property.isAvailable ? 'Available' : 'Rented' }}
                         </div>
+                        <!-- AI Prediction Badge -->
+                        <div *ngIf="property.predictedPrice" class="ai-badge"
+                            [title]="'AI recommended price for this area: ' + property.predictedPrice.price_eth + ' ETH'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 2v8"></path>
+                                <path d="m4.93 10.93 1.41 1.41"></path>
+                                <path d="M2 18h2"></path>
+                                <path d="M20 18h2"></path>
+                                <path d="m19.07 10.93-1.41 1.41"></path>
+                                <path d="M22 22H2"></path>
+                                <path d="m8 22 4-10 4 10"></path>
+                            </svg>
+                            <span>AI Value: <b>{{ property.predictedPrice.price_eth | number:'1.4-4' }} ETH</b></span>
+                        </div>
                         <div class="price-tag">
                             {{ property.rentAmount | currency:'USD':'symbol':'1.0-0' }}<span>/mo</span>
                         </div>

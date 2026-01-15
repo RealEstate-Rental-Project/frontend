@@ -127,6 +127,36 @@ $radius: 8px;
             }
         }
 
+        .ai-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(26, 26, 46, 0.9);
+            backdrop-filter: blur(4px);
+            color: #d4af37;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            z-index: 2;
+
+            svg {
+                color: #d4af37;
+            }
+
+            span {
+                font-weight: 500;
+
+                b {
+                    font-weight: 700;
+                }
+            }
+        }
+
         .price-tag {
             position: absolute;
             bottom: 1rem;
