@@ -115,40 +115,48 @@
         margin: 0 0 0.5rem;
     }
 
-    .price-container {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-
     .price {
         color: #333;
-        font-weight: 600;
-        font-size: 1rem;
-        margin: 0;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0 0 0.8rem;
     }
 
-    .ai-suggestion {
-        display: inline-flex;
-        align-items: center;
+    .optimization-container {
+        display: flex;
+        flex-direction: column;
         gap: 6px;
-        background: rgba(212, 175, 55, 0.08);
+        background: rgba(212, 175, 55, 0.05);
         border: 1px solid rgba(212, 175, 55, 0.2);
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        color: #b5952f;
+        padding: 10px 14px;
+        border-radius: 10px;
+        border-left: 3px solid #d4af37;
 
-        svg {
-            color: #d4af37;
+        .opt-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #b5952f;
+            font-weight: 700;
         }
 
-        span {
-            font-weight: 500;
+        .opt-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
 
-            b {
-                font-weight: 700;
+            .opt-label {
+                font-size: 0.75rem;
+                color: #666;
+            }
+
+            .opt-value {
+                font-size: 0.95rem;
+                font-weight: 800;
+                color: #333;
             }
         }
     }

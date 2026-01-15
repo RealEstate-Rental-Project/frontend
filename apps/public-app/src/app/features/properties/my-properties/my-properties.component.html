@@ -42,11 +42,9 @@
                             </span>
                         </div>
                         <p class="address">{{ property.address }}</p>
-                        <div class="price-container">
-                            <p class="price">{{ property.rentAmount }} ETH / month</p>
-                            <div *ngIf="property.predictedPrice" class="ai-suggestion"
-                                [title]="'AI recommended price for this area: ' + property.predictedPrice.price_eth + ' ETH'">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                        <div class="optimization-container" *ngIf="property.predictedPrice">
+                            <div class="opt-header">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
                                     <path d="M12 2v8"></path>
@@ -57,8 +55,12 @@
                                     <path d="M22 22H2"></path>
                                     <path d="m8 22 4-10 4 10"></path>
                                 </svg>
-                                <span>AI Suggestion: <b>{{ property.predictedPrice.price_eth | number:'1.4-4' }}
-                                        ETH</b></span>
+                                <span>Optimization Tip</span>
+                            </div>
+                            <div class="opt-body">
+                                <span class="opt-label">Recommended Strategy:</span>
+                                <span class="opt-value">{{ property.predictedPrice.price_eth | number:'1.4-4' }}
+                                    ETH</span>
                             </div>
                         </div>
                     </div>
