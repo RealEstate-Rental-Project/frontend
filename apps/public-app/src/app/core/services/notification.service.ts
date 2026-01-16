@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Notification } from '../models/notification.model';
@@ -27,17 +26,22 @@ export class NotificationService {
   connect(userId: number): void {
     if (this.stompClient?.active) return;
 
-    this.stompClient = new Client({
-      webSocketFactory: () =>
-        new SockJS(
-          `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.NOTIFICATIONS.SOCKET}`,
-          null,
-          { transports: ['websocket'] }
-        ),
+    // Construct Broker URL for native WebSocket
+    // We bypass SockJS and use the direct /websocket sub-path
+    const gatewayUrl = API_CONSTANTS.GATEWAY_URL;
+    const wsProtocol = gatewayUrl.startsWith('https') ? 'wss' : 'ws';
+    const cleanUrl = gatewayUrl.replace(/^https?:\/\//, '');
+    const brokerURL = `${wsProtocol}://${cleanUrl}${API_CONSTANTS.ENDPOINTS.NOTIFICATIONS.SOCKET}/websocket`;
 
-      debug: () => { },
+    this.stompClient = new Client({
+      brokerURL: brokerURL,
+
+      debug: (str) => {
+        console.log('STOMP Debug:', str);
+      },
 
       onConnect: () => {
+        console.log('STOMP Connected to:', brokerURL);
         this.stompClient?.subscribe(
           `/topic/notifications/${userId}`,
           (message: IMessage) => {
@@ -49,6 +53,10 @@ export class NotificationService {
 
       onStompError: frame => {
         console.error('STOMP error:', frame);
+      },
+
+      onWebSocketClose: () => {
+        console.log('STOMP WebSocket Connection Closed');
       }
     });
 
