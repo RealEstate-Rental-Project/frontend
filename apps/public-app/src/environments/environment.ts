@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  gatewayUrl: '/api',
+  gatewayUrl: 'http://192.168.39.96:30080',
 
 };
