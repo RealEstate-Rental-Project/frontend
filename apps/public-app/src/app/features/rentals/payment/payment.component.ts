@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './payment.component.html',
-  styleUrls: ['./payment.component.scss']
+  styleUrls: ['./payment.component.scss'],
 })
 export class PaymentComponent implements OnInit {
   request: RentalRequest | null = null;
@@ -31,10 +31,10 @@ export class PaymentComponent implements OnInit {
     private rentalService: RentalService,
     private blockchainService: BlockchainService,
     private toastService: ToastService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    // In a real app, we would fetch the request by ID. 
+    // In a real app, we would fetch the request by ID.
     // For now, we'll fetch all requests and find the one matching the ID in the route.
     // Or better, add a getRequestById method to the service.
     // Since I don't have getRequestById, I'll use getMyRentalRequests and filter.
@@ -42,7 +42,7 @@ export class PaymentComponent implements OnInit {
 
     this.rentalService.getMyRentalRequests().subscribe({
       next: (requests) => {
-        this.request = requests.find(r => r.idRequest === requestId) || null;
+        this.request = requests.find((r) => r.idRequest === requestId) || null;
         this.loading = false;
         if (!this.request) {
           this.toastService.show('Request not found', 'error');
@@ -52,7 +52,7 @@ export class PaymentComponent implements OnInit {
       error: (err) => {
         console.error('Error loading request', err);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -60,7 +60,9 @@ export class PaymentComponent implements OnInit {
     if (!this.request) return 0;
     // Initial payment is usually 1st month rent + security deposit
     // The prompt says: (Loyer * 1) + Caution
-    return this.request.property.rentAmount + this.request.property.securityDeposit;
+    return (
+      this.request.property.rentAmount + this.request.property.securityDeposit
+    );
   }
 
   async processPayment() {
@@ -68,7 +70,10 @@ export class PaymentComponent implements OnInit {
 
     this.processing = true;
     try {
-      this.toastService.show('Please confirm transaction in MetaMask...', 'info');
+      this.toastService.show(
+        'Please confirm transaction in MetaMask...',
+        'info'
+      );
 
       // Convert MAD (frontend) to ETH (smart contract) using test ratio
       const totalMad = this.totalAmount;
@@ -84,7 +89,10 @@ export class PaymentComponent implements OnInit {
       );
 
       console.log('Blockchain transaction successful:', result);
-      this.toastService.show('Payment successful! Creating contract...', 'success');
+      this.toastService.show(
+        'Payment successful! Creating contract...',
+        'success'
+      );
 
       // 2. Calculate End Date
       const startDate = new Date();
@@ -103,29 +111,37 @@ export class PaymentComponent implements OnInit {
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate.toISOString().split('T')[0],
         initialPaymentAmount: this.request.property.rentAmount, // Initial rent paid
-        initialTxHash: result.receipt.hash
+        initialTxHash: result.receipt.hash,
       };
 
-      this.rentalService.createContract(contractData).pipe(
-        switchMap(() => {
-          return this.rentalService.updateRequestStatus(this.request!.idRequest, 'PENDING_RESERVATION');
-        })
-      ).subscribe({
-        next: () => {
-          this.toastService.show('Contract signed successfully!', 'success');
-          this.router.navigate(['/rentals/my-contracts']);
-        },
-        error: (err) => {
-          console.error('Error creating contract or updating status', err);
-          // Even if status update fails, contract might be created. 
-          // But for now let's treat it as an error or maybe success with warning.
-          // Given the flow, if contract is created but status update fails, the user might pay again.
-          // So it's better to show error.
-          this.toastService.show('Contract created but status update failed. Please check My Contracts.', 'warning');
-          this.router.navigate(['/rentals/my-contracts']);
-        }
-      });
-
+      this.rentalService
+        .createContract(contractData)
+        .pipe(
+          switchMap(() => {
+            return this.rentalService.updateRequestStatus(
+              this.request!.idRequest,
+              'PENDING_RESERVATION'
+            );
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.toastService.show('Contract signed successfully!', 'success');
+            this.router.navigate(['/rentals/my-contracts']);
+          },
+          error: (err) => {
+            console.error('Error creating contract or updating status', err);
+            // Even if status update fails, contract might be created.
+            // But for now let's treat it as an error or maybe success with warning.
+            // Given the flow, if contract is created but status update fails, the user might pay again.
+            // So it's better to show error.
+            this.toastService.show(
+              'Contract created but status update failed. Please check My Contracts.',
+              'warning'
+            );
+            this.router.navigate(['/rentals/my-contracts']);
+          },
+        });
     } catch (error: any) {
       console.error('Payment error:', error);
       if (error.code === 'ACTION_REJECTED') {
