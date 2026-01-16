@@ -67,7 +67,7 @@ export class UserService {
         }
 
         return await lastValueFrom(this.http.patch<User>(
-            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}/id/${user.id}`,
+            `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.USERS.BASE}/${user.id}`,
             user,
             { headers }
         ));
