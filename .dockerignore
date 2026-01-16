@@ -1,26 +1,4 @@
-# Fichiers à exclure du contexte Docker
-node_modules
-.git
-.nx
-.angular
-dist
-*.log
-.env
-.env.*
-.vscode
-.idea
-
-# Fichiers de CI/CD non nécessaires
-Jenkinsfile
-.gitignore
-.prettierrc
-.prettierignore
-.editorconfig
-README.md
-DOCKER_BUILD.md
-sonar-project.properties
-
-# Fichiers de test
-*.spec.ts
-**/*.spec.ts
-vitest.workspace.ts
+*
+!dist
+!nginx.conf
+!Dockerfile
