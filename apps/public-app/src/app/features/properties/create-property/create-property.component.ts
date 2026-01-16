@@ -256,6 +256,7 @@ export class CreatePropertyComponent implements OnInit {
                 const rentEth = (this.property.rentAmount / MAD_PER_ETH_TEST).toString();
                 const depositEth = (this.property.securityDeposit / MAD_PER_ETH_TEST).toString();
 
+                // 1. Blockchain Call
                 const result = await this.blockchainService.listProperty(
                     this.property.address,
                     this.property.description,
