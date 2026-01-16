@@ -15,6 +15,10 @@ export class ToastService {
     private counter = 0;
 
     show(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', duration = 5000) {
+        if (type === 'error') {
+            return;
+        }
+
         const id = this.counter++;
         const toast: Toast = { id, message, type, duration };
         this.toasts.update(current => [...current, toast]);
