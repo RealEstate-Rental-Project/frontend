@@ -24,6 +24,7 @@ export const API_CONSTANTS = {
       FEATURED: '/api/property-microservice/properties/featured',
       MY_PROPERTIES: '/api/property-microservice/properties/my-properties',
       HEATMAP: '/api/property-microservice/properties/heatmap',
+      RECOMMENDATIONS: '/api/property-microservice/properties/recommendations',
       PREDICT_PRICE: (id: number) =>
         `/api/property-microservice/properties/${id}/predict-price`,
       BY_ID: (id: number) => `/api/property-microservice/properties/${id}`,
