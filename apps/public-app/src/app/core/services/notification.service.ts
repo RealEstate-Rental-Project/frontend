@@ -30,7 +30,9 @@ export class NotificationService {
     this.stompClient = new Client({
       webSocketFactory: () =>
         new SockJS(
-          `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.NOTIFICATIONS.SOCKET}`
+          `${API_CONSTANTS.GATEWAY_URL}${API_CONSTANTS.ENDPOINTS.NOTIFICATIONS.SOCKET}`,
+          null,
+          { transports: ['websocket'] }
         ),
 
       debug: () => { },
