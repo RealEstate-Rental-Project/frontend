@@ -8,15 +8,11 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/apps/public-app",
         "browser": "apps/public-app/src/main.ts",
-        "polyfills": [
-          "zone.js"
-        ],
+        "polyfills": ["zone.js"],
         "tsConfig": "apps/public-app/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -28,14 +24,19 @@
             "glob": "**/*",
             "input": "apps/public-app/src/assets",
             "output": "assets"
+          },
+          {
+            "glob": "**/*.png",
+            "input": "node_modules/leaflet/dist/images",
+            "output": "assets"
           }
         ],
         "styles": [
-          "apps/public-app/src/styles.scss"
+          "apps/public-app/src/styles.scss",
+          "node_modules/leaflet/dist/leaflet.css"
         ],
-        "allowedCommonJsDependencies": [
-          "leaflet"
-        ]
+        "allowedCommonJsDependencies": ["leaflet"],
+        "scripts": []
       },
       "configurations": {
         "production": {
