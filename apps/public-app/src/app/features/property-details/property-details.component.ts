@@ -29,8 +29,8 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private propertyService: PropertyService,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) { }
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -52,8 +52,10 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
         }
       });
 
-      this.propertyService.getRecommendations().subscribe(props => {
-        this.recommendedProperties = props.filter(p => p.idProperty.toString() !== id).slice(0, 4);
+      this.propertyService.getRecommendations().subscribe((props) => {
+        this.recommendedProperties = props
+          .filter((p) => p.idProperty.toString() !== id)
+          .slice(0, 4);
       });
     }
   }
@@ -68,7 +70,8 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
       this.map.remove(); // Clean up existing map if any
     }
 
-    const L = await import('leaflet');
+    const leafletModule = await import('leaflet');
+    const L = (leafletModule as any).default || leafletModule;
     const lat = this.property.latitude;
     const lng = this.property.longitude;
 
@@ -146,6 +149,8 @@ export class PropertyDetailsComponent implements OnInit, AfterViewInit {
   }
 
   getPropertyImage(property: Property): string {
-    return property.rooms?.[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp';
+    return (
+      property.rooms?.[0]?.roomImages?.[0]?.url || 'assets/placeholder.webp'
+    );
   }
 }

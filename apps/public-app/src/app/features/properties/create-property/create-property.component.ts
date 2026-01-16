@@ -59,7 +59,7 @@ export class CreatePropertyComponent implements OnInit {
     private propertyService: PropertyService,
     private toastService: ToastService,
     private blockchainService: BlockchainService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {}
 
   ngOnInit(): void {
@@ -127,7 +127,8 @@ export class CreatePropertyComponent implements OnInit {
   private async initMap() {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    const L = await import('leaflet');
+    const leafletModule = await import('leaflet');
+    const L = (leafletModule as any).default || leafletModule;
 
     // Fix Leaflet marker icon issues
     const iconRetinaUrl =
